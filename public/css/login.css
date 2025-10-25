@@ -1,0 +1,238 @@
+:root {
+    --primary-gold: #D4AF37;
+    --primary-green: #2C5E1A;
+    --secondary-green: #4A7C59;
+    --accent-beige: #F5F2E9;
+    --background-light: #F8FAFC;
+    --text-dark: #1A202C;
+    --error-red: #E53E3E;
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Nunito', 'Arial', sans-serif;
+    background-color: var(--background-light);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Background pattern subtle */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        radial-gradient(circle at 20% 80%, rgba(212, 175, 55, 0.03) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(44, 94, 26, 0.03) 0%, transparent 50%);
+    z-index: -1;
+}
+
+.auth-main {
+    width: 100%;
+    max-width: 420px;
+    padding: 0 15px;
+}
+
+.login-container {
+    background-color: white;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    overflow: hidden;
+    width: 100%;
+    max-width: 420px;
+    border-top: 5px solid var(--primary-green);
+}
+
+/* Header lebih compact */
+.login-header {
+    text-align: center;
+    padding: 25px 20px 20px;
+    background: var(--primary-green);
+    color: white;
+}
+
+.logo {
+    max-width: 70px;
+    margin-bottom: 12px;
+    border-radius: 50%;
+    background: white;
+    padding: 6px;
+    display: inline-block;
+}
+
+.login-header h1 {
+    font-family: 'Amiri', serif;
+    font-size: 26px;
+    margin: 0 0 4px 0;
+    font-weight: 700;
+    color: var(--primary-gold);
+}
+
+.login-header p {
+    font-size: 13px;
+    opacity: 0.9;
+    margin: 0;
+    color: white;
+    font-weight: 400;
+}
+
+/* Label Login lebih simple */
+.form-label {
+    text-align: center;
+    padding: 20px 20px 15px;
+    background: white;
+}
+
+.form-label h2 {
+    margin: 0;
+    font-size: 18px;
+    color: var(--primary-green);
+    font-weight: 600;
+}
+
+/* Form lebih compact */
+.login-form {
+    padding: 0 20px 25px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+    position: relative;
+}
+
+.form-group:last-child {
+    margin-bottom: 0;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    font-size: 14px;
+    background: white;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: var(--primary-gold);
+    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+}
+
+.form-group label {
+    position: absolute;
+    top: 50%;
+    left: 14px;
+    transform: translateY(-50%);
+    color: #9CA3AF;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    pointer-events: none;
+    font-size: 14px;
+    background: white;
+    padding: 0 4px;
+}
+
+.form-group input:focus + label,
+.form-group input:valid + label {
+    top: 0;
+    left: 10px;
+    transform: translateY(-50%) scale(0.85);
+    font-size: 12px;
+    color: var(--primary-gold);
+}
+
+.error {
+    color: var(--error-red);
+    font-size: 11px;
+    margin-top: 4px;
+    display: block;
+}
+
+.alert {
+    padding: 10px 12px;
+    border-radius: 6px;
+    margin: 0 20px 15px;
+    background: rgba(229, 62, 62, 0.1);
+    border: 1px solid var(--error-red);
+    color: var(--error-red);
+    font-size: 13px;
+}
+
+.alert ul {
+    margin: 0;
+    padding-left: 18px;
+}
+
+/* Hide checkbox */
+.form-options,
+.checkbox {
+    display: none;
+}
+
+/* Button lebih simple */
+.btn-login {
+    width: 100%;
+    padding: 12px;
+    background: var(--primary-green);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 8px;
+}
+
+.btn-login:hover {
+    background: var(--secondary-green);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(44, 94, 26, 0.2);
+}
+
+.btn-login:active {
+    transform: translateY(0);
+}
+
+.btn-loader {
+    display: none;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top: 2px solid white;
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    animation: spin 1s linear infinite;
+    margin-left: 8px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Footer lebih compact */
+.login-footer {
+    text-align: center;
+    padding: 12px 20px;
+    color: var(--secondary-green);
+    font-size: 12px;
+    border-top: 1px solid #e2e8f0;
+    background: var(--accent-beige);
+}
