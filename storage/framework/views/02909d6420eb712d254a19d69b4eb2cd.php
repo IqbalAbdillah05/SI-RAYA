@@ -1,8 +1,8 @@
-@extends('layouts.mahasiswa')
 
-@section('title', 'Dokumentasi Sistem')
 
-@section('content')
+<?php $__env->startSection('title', 'Dokumentasi Sistem'); ?>
+
+<?php $__env->startSection('content'); ?>
 <div class="dokumentasi-mahasiswa">
     <!-- Welcome Header -->
     <div class="page-header-banner">
@@ -362,7 +362,7 @@
             </div>
         </div>
 
-@push('styles')
+<?php $__env->startPush('styles'); ?>
 <style>
     .dokumentasi-mahasiswa {
         display: flex;
@@ -923,5 +923,7 @@
         }
     }
 </style>
-@endpush
-@endsection
+<?php $__env->stopPush(); ?>
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.mahasiswa', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\laragon\www\si-raya\resources\views/mahasiswa/bantuan/dokumentasi.blade.php ENDPATH**/ ?>

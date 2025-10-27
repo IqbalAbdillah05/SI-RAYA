@@ -57,7 +57,7 @@
         .kop-institusi {
             font-size: 12pt;
             font-weight: bold;
-            color: #0B6623;
+            color: #006633;
             margin-bottom: 3px;
         }
 
@@ -69,7 +69,7 @@
         }
 
         .header-divider {
-            border-bottom: 2px solid #0B6623;
+            border-bottom: 2px solid #006633;
             margin: 10px 0;
             clear: both;
         }
@@ -77,7 +77,7 @@
         .document-title {
             font-size: 13pt;
             font-weight: bold;
-            color: #0B6623;
+            color: #006633;
             margin-top: 10px;
             margin-bottom: 10px;
             text-transform: uppercase;
@@ -131,7 +131,7 @@
         .summary-title {
             font-size: 10pt;
             font-weight: bold;
-            color: #0B6623;
+            color: #006633;
             margin-bottom: 8px;
         }
 
@@ -160,7 +160,7 @@
         .summary-value {
             font-size: 12pt;
             font-weight: bold;
-            color: #0B6623;
+            color: #006633;
         }
 
         table {
@@ -170,7 +170,7 @@
         }
 
         table thead {
-            background-color: #0B6623;
+            background-color: #006633;
             color: white;
         }
 
@@ -257,20 +257,8 @@
     <div class="header">
         <div class="header-content">
             <div class="logo-section">
-                <img src="{{ public_path('images/stai-raya-logo.png') }}" alt="Logo STAI RAYA">
-            </div>
-            <div class="text-section">
-                <div class="kop-institusi" style="font-size: 11pt; font-weight: bold; margin-bottom: 2px;">
-                    SEKOLAH TINGGI AGAMA ISLAM<br>
-                    RADEN ABDULLAH YAQIN (STAI RAYA)
-                </div>
-                <div style="font-size: 10pt; font-weight: bold; color: #000; margin-bottom: 5px;">
-                    MLOKOREJO - JEMBER
-                </div>
-                <div class="kop-alamat" style="font-size: 7.5pt;">
-                    Alamat : Jl. KH. Abdullah Yaqin No. 1-5 Mlokorejo Jember &nbsp; Telp : 085258963834<br>
-                    Email : stairayajember@gmail.com Website : https://ponpes-mloko.net
-                </div>
+
+            <img src="{{ public_path('storage/logo/kopsurat.jpg') }}" alt="Kop Surat STAI RAYA" style="width: 100%; height: auto;">
             </div>
         </div>
         <div class="header-divider"></div>

@@ -1,8 +1,8 @@
-@extends('layouts.dosen')
 
-@section('title', 'Kontak & Dukungan')
 
-@section('content')
+<?php $__env->startSection('title', 'Kontak & Dukungan'); ?>
+
+<?php $__env->startSection('content'); ?>
 <div class="page-header">
     <h1>📞 Kontak & Dukungan</h1>
     <p>Hubungi kami untuk bantuan dan dukungan teknis</p>
@@ -120,17 +120,17 @@
         <h3>Masih Butuh Bantuan?</h3>
         <p>Lihat panduan lengkap dan FAQ untuk solusi cepat</p>
         <div class="help-buttons">
-            <a href="{{ route('dosen.bantuan.index') }}" class="help-btn primary">
+            <a href="<?php echo e(route('dosen.bantuan.index')); ?>" class="help-btn primary">
                 ❓ Lihat FAQ
             </a>
-            <a href="{{ route('dosen.bantuan.dokumentasi') }}" class="help-btn secondary">
+            <a href="<?php echo e(route('dosen.bantuan.dokumentasi')); ?>" class="help-btn secondary">
                 📚 Baca Dokumentasi
             </a>
         </div>
     </div>
 </div>
 
-@push('styles')
+<?php $__env->startPush('styles'); ?>
 <style>
     .page-header {
         margin-bottom: 2rem;
@@ -466,5 +466,7 @@
         }
     }
 </style>
-@endpush
-@endsection
+<?php $__env->stopPush(); ?>
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.dosen', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\laragon\www\si-raya\resources\views/dosen/bantuan/kontak.blade.php ENDPATH**/ ?>

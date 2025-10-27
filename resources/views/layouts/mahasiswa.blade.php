@@ -749,7 +749,7 @@
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-text">
-                &copy; {{ date('Y') }} STAI RAYA - Sistem Informasi Akademik
+                &copy; {{ date('Y') }} SI-RAYA - Sistem Informasi STAI RAYA
             </div>
             <div class="footer-links">
                 <a href="#" class="footer-link">Bantuan</a>

@@ -1,8 +1,8 @@
-@extends('layouts.mahasiswa')
 
-@section('title', 'Bantuan & FAQ')
 
-@section('content')
+<?php $__env->startSection('title', 'Bantuan & FAQ'); ?>
+
+<?php $__env->startSection('content'); ?>
 <div class="bantuan-mahasiswa">
     <!-- Welcome Header -->
     <div class="page-header-banner">
@@ -282,10 +282,10 @@
                 <h3>Masih Butuh Bantuan?</h3>
                 <p>Jika pertanyaan Anda tidak terjawab di sini, silakan hubungi tim support kami</p>
                 <div class="contact-links">
-                    <a href="{{ route('mahasiswa.bantuan.kontak') }}" class="btn-contact primary">
+                    <a href="<?php echo e(route('mahasiswa.bantuan.kontak')); ?>" class="btn-contact primary">
                         <i class="fas fa-phone-alt"></i> Hubungi Admin
                     </a>
-                    <a href="{{ route('mahasiswa.bantuan.dokumentasi') }}" class="btn-contact secondary">
+                    <a href="<?php echo e(route('mahasiswa.bantuan.dokumentasi')); ?>" class="btn-contact secondary">
                         <i class="fas fa-book-open"></i> Lihat Dokumentasi
                     </a>
                 </div>
@@ -294,7 +294,7 @@
     </div>
 </div>
 
-@push('styles')
+<?php $__env->startPush('styles'); ?>
 <style>
     .bantuan-mahasiswa {
         display: flex;
@@ -648,5 +648,7 @@
         }
     }
 </style>
-@endpush
-@endsection
+<?php $__env->stopPush(); ?>
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.mahasiswa', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\laragon\www\si-raya\resources\views/mahasiswa/bantuan/index.blade.php ENDPATH**/ ?>
