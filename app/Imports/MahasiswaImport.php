@@ -191,7 +191,7 @@ class MahasiswaImport implements ToModel, WithHeadingRow, SkipsOnError
                 'username' => $nim,
                 'nim' => $nim,
                 'role' => 'mahasiswa',
-                'password' => Hash::make($password ?? $nim), // Default password = NIM
+                'password' => Hash::make($password ?? ($tanggalLahirParsed ? $tanggalLahirParsed->format('dmY') : $nim)), // Default password = tanggal lahir atau NIM
             ]);
 
             // Create Mahasiswa Profile
