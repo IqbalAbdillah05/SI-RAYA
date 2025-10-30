@@ -678,7 +678,7 @@
 
                 <a href="{{ route('mahasiswa.presensi.riwayat') }}" class="nav-link {{ request()->routeIs('mahasiswa.presensi.*') ? 'active' : '' }}">
     <i class="fas fa-clipboard-list"></i>
-    <span>Presensi Mahasiswa</span>
+    <span>Riwayat Presensi</span>
 </a>
 
                 <a href="{{ route('mahasiswa.bantuan.index') }}" class="nav-link {{ request()->routeIs('mahasiswa.bantuan.*') ? 'active' : '' }}">
@@ -737,7 +737,7 @@
     <div class="mobile-nav-title">Presensi</div>
     <a href="{{ route('mahasiswa.presensi.riwayat') }}" class="mobile-nav-link {{ request()->routeIs('mahasiswa.presensi.*') ? 'active' : '' }}">
         <i class="fas fa-clipboard-list"></i>
-        <span>Riwayat Presensi</span>
+        <span>Riwayat Presensi Mahasiswa</span>
     </a>
 </div>
     </div>
