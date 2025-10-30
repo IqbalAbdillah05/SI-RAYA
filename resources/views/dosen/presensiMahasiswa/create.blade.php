@@ -494,37 +494,87 @@ document.addEventListener('DOMContentLoaded', function() {
     const loadingOverlay = document.getElementById('loadingOverlay');
 
     // Load mata kuliah when prodi and semester selected
-    function loadMataKuliah() {
-        const prodiId = prodiSelect.value;
-        const semester = semesterSelect.value;
+function loadMataKuliah() {
+    const prodiId = prodiSelect.value;
+    const semester = semesterSelect.value;
 
-        if (prodiId && semester) {
-            loadingOverlay.classList.add('active');
+    console.log('=== LOADING MATA KULIAH ===');
+    console.log('Prodi ID:', prodiId);
+    console.log('Semester:', semester);
+
+    if (prodiId && semester) {
+        loadingOverlay.classList.add('active');
+        
+        // Reset select
+        matakuliahSelect.innerHTML = '<option value="">Memuat...</option>';
+        matakuliahSelect.disabled = true;
+        
+        // Gunakan route() helper Laravel
+        const url = `{{ route('dosen.presensiMahasiswa.getMatakuliah') }}?prodi_id=${prodiId}&semester=${semester}`;
+        console.log('Fetch URL:', url);
+        
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            credentials: 'same-origin'
+        })
+        .then(response => {
+            console.log('Response Status:', response.status);
+            console.log('Response OK:', response.ok);
             
-            fetch(`/dosen/presensi-mahasiswa/get-matakuliah?prodi_id=${prodiId}&semester=${semester}`)
-                .then(response => response.json())
-                .then(data => {
-                    matakuliahSelect.innerHTML = '<option value="">Pilih Mata Kuliah</option>';
-                    
-                    if (data.length === 0) {
-                        matakuliahSelect.innerHTML += '<option value="" disabled>Tidak ada mata kuliah di jadwal Anda</option>';
-                        matakuliahSelect.disabled = true;
-                    } else {
-                        data.forEach(mk => {
-                            matakuliahSelect.innerHTML += `<option value="${mk.id}">${mk.kode_matakuliah} - ${mk.nama_matakuliah}</option>`;
-                        });
-                        matakuliahSelect.disabled = false;
-                    }
-                    
-                    loadingOverlay.classList.remove('active');
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Gagal memuat data mata kuliah');
-                    loadingOverlay.classList.remove('active');
+            if (!response.ok) {
+                return response.text().then(text => {
+                    console.error('Error Response:', text);
+                    throw new Error(`HTTP ${response.status}: ${text}`);
                 });
-        }
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Data received:', data);
+            
+            matakuliahSelect.innerHTML = '<option value="">Pilih Mata Kuliah</option>';
+            
+            if (data.error) {
+                console.error('Server error:', data.error);
+                alert('Error: ' + data.error);
+                matakuliahSelect.innerHTML += '<option value="" disabled>Error memuat data</option>';
+            } else if (data.length === 0) {
+                console.warn('No data found');
+                matakuliahSelect.innerHTML += '<option value="" disabled>Tidak ada mata kuliah di jadwal Anda</option>';
+            } else {
+                console.log('Adding options, count:', data.length);
+                data.forEach(mk => {
+                    const option = document.createElement('option');
+                    option.value = mk.id;
+                    option.textContent = `${mk.kode_matakuliah} - ${mk.nama_matakuliah}`;
+                    matakuliahSelect.appendChild(option);
+                });
+                matakuliahSelect.disabled = false;
+            }
+            
+            loadingOverlay.classList.remove('active');
+            console.log('=== DONE ===');
+        })
+        .catch(error => {
+            console.error('=== FETCH ERROR ===');
+            console.error('Error:', error);
+            
+            matakuliahSelect.innerHTML = '<option value="">Pilih Mata Kuliah</option>';
+            matakuliahSelect.innerHTML += '<option value="" disabled>Gagal memuat data</option>';
+            
+            alert('Gagal memuat data mata kuliah. Error: ' + error.message + '\n\nCek console browser (F12) untuk detail.');
+            loadingOverlay.classList.remove('active');
+        });
+    } else {
+        matakuliahSelect.innerHTML = '<option value="">Pilih Mata Kuliah</option>';
+        matakuliahSelect.disabled = true;
     }
+}
 
     prodiSelect.addEventListener('change', function() {
         loadMataKuliah();
@@ -549,102 +599,113 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     loadMahasiswaBtn.addEventListener('click', function() {
-        const prodiId = prodiSelect.value;
-        const semester = semesterSelect.value;
-        const matakuliahId = matakuliahSelect.value;
-        const tanggalPresensi = document.getElementById('tanggalPresensiInput').value;
+    const prodiId = prodiSelect.value;
+    const semester = semesterSelect.value;
+    const matakuliahId = matakuliahSelect.value;
+    const tanggalPresensi = document.getElementById('tanggalPresensiInput').value;
 
-        document.getElementById('hiddenProdi').value = prodiId;
-        document.getElementById('hiddenSemester').value = semester;
-        document.getElementById('hiddenMatakuliah').value = matakuliahId;
-        document.getElementById('hiddenTanggalPresensi').value = tanggalPresensi;
+    document.getElementById('hiddenProdi').value = prodiId;
+    document.getElementById('hiddenSemester').value = semester;
+    document.getElementById('hiddenMatakuliah').value = matakuliahId;
+    document.getElementById('hiddenTanggalPresensi').value = tanggalPresensi;
 
-        loadingOverlay.classList.add('active');
+    loadingOverlay.classList.add('active');
 
-        fetch(`/dosen/presensi-mahasiswa/get-mahasiswa?prodi_id=${prodiId}&semester=${semester}&matakuliah_id=${matakuliahId}&tanggal=${tanggalPresensi}`)
-            .then(response => response.json())
-            .then(data => {
-                mahasiswaTableBody.innerHTML = '';
-                
-                if (data.length === 0) {
-                    mahasiswaTableBody.innerHTML = `
-                        <tr>
-                            <td colspan="6" style="text-align: center; padding: 40px;">
-                                <i class="fas fa-info-circle" style="font-size: 48px; color: #ffc107; margin-bottom: 16px;"></i>
-                                <p style="color: #666; font-size: 16px; margin: 0;">
-                                    <strong>Semua mahasiswa sudah dipresensi hari ini</strong><br>
-                                    <small>Tidak ada mahasiswa yang perlu dipresensi untuk filter yang dipilih</small>
-                                </p>
-                            </td>
-                        </tr>
-                    `;
-                } else {
-                    data.forEach((mhs, index) => {
-                        mahasiswaTableBody.innerHTML += `
-                            <tr>
-                                <td>${index + 1}</td>
-                                <td>${mhs.nim}</td>
-                                <td>${mhs.nama_lengkap}</td>
-                                <td>${mhs.prodi ? mhs.prodi.nama_prodi : '-'}</td>
-                                <td>
-                                    <input type="hidden" name="mahasiswa_id[]" value="${mhs.id}">
-                                    <div class="status-radio-group">
-                                        <div class="status-radio status-hadir">
-                                            <input type="radio" name="status[${index}]" value="hadir" 
-                                                   id="hadir_${index}" checked required
-                                                   onchange="toggleFotoUpload(${index}, 'hadir')">
-                                            <label for="hadir_${index}">Hadir</label>
-                                        </div>
-                                        <div class="status-radio status-izin">
-                                            <input type="radio" name="status[${index}]" value="izin" 
-                                                   id="izin_${index}" required
-                                                   onchange="toggleFotoUpload(${index}, 'izin')">
-                                            <label for="izin_${index}">Izin</label>
-                                        </div>
-                                        <div class="status-radio status-sakit">
-                                            <input type="radio" name="status[${index}]" value="sakit" 
-                                                   id="sakit_${index}" required
-                                                   onchange="toggleFotoUpload(${index}, 'sakit')">
-                                            <label for="sakit_${index}">Sakit</label>
-                                        </div>
-                                        <div class="status-radio status-alpha">
-                                            <input type="radio" name="status[${index}]" value="alpha" 
-                                                   id="alpha_${index}" required
-                                                   onchange="toggleFotoUpload(${index}, 'alpha')">
-                                            <label for="alpha_${index}">Alpha</label>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <input type="text" name="keterangan[]" class="form-control" 
-                                           placeholder="Optional" maxlength="100">
-                                    <div class="file-upload-wrapper" id="upload_wrapper_${index}">
-                                        <input type="file" 
-                                               name="foto_bukti[${index}]" 
-                                               id="foto_bukti_${index}"
-                                               class="file-upload-input" 
-                                               accept="image/jpeg,image/jpg,image/png"
-                                               onchange="previewImage(${index})">
-                                        <div class="file-info">
-                                            <i class="fas fa-info-circle"></i> Maks. 2MB (JPG, PNG)
-                                        </div>
-                                        <img id="preview_${index}" class="file-preview" alt="Preview">
-                                    </div>
-                                </td>
-                            </tr>
-                        `;
-                    });
-                }
-
-                mahasiswaTableContainer.style.display = 'block';
-                loadingOverlay.classList.remove('active');
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Gagal memuat data mahasiswa');
-                loadingOverlay.classList.remove('active');
+    // Gunakan route() helper
+    const url = `{{ route('dosen.presensiMahasiswa.getMahasiswa') }}?prodi_id=${prodiId}&semester=${semester}&matakuliah_id=${matakuliahId}&tanggal=${tanggalPresensi}`;
+    
+    fetch(url, {
+        method: 'GET',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'Accept': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        credentials: 'same-origin'
+    })
+    .then(response => response.json())
+    .then(data => {
+        mahasiswaTableBody.innerHTML = '';
+        
+        if (data.length === 0) {
+            mahasiswaTableBody.innerHTML = `
+                <tr>
+                    <td colspan="6" style="text-align: center; padding: 40px;">
+                        <i class="fas fa-info-circle" style="font-size: 48px; color: #ffc107; margin-bottom: 16px;"></i>
+                        <p style="color: #666; font-size: 16px; margin: 0;">
+                            <strong>Semua mahasiswa sudah dipresensi hari ini</strong><br>
+                            <small>Tidak ada mahasiswa yang perlu dipresensi untuk filter yang dipilih</small>
+                        </p>
+                    </td>
+                </tr>
+            `;
+        } else {
+            data.forEach((mhs, index) => {
+                mahasiswaTableBody.innerHTML += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${mhs.nim}</td>
+                        <td>${mhs.nama_lengkap}</td>
+                        <td>${mhs.prodi ? mhs.prodi.nama_prodi : '-'}</td>
+                        <td>
+                            <input type="hidden" name="mahasiswa_id[]" value="${mhs.id}">
+                            <div class="status-radio-group">
+                                <div class="status-radio status-hadir">
+                                    <input type="radio" name="status[${index}]" value="hadir" 
+                                           id="hadir_${index}" checked required
+                                           onchange="toggleFotoUpload(${index}, 'hadir')">
+                                    <label for="hadir_${index}">Hadir</label>
+                                </div>
+                                <div class="status-radio status-izin">
+                                    <input type="radio" name="status[${index}]" value="izin" 
+                                           id="izin_${index}" required
+                                           onchange="toggleFotoUpload(${index}, 'izin')">
+                                    <label for="izin_${index}">Izin</label>
+                                </div>
+                                <div class="status-radio status-sakit">
+                                    <input type="radio" name="status[${index}]" value="sakit" 
+                                           id="sakit_${index}" required
+                                           onchange="toggleFotoUpload(${index}, 'sakit')">
+                                    <label for="sakit_${index}">Sakit</label>
+                                </div>
+                                <div class="status-radio status-alpha">
+                                    <input type="radio" name="status[${index}]" value="alpha" 
+                                           id="alpha_${index}" required
+                                           onchange="toggleFotoUpload(${index}, 'alpha')">
+                                    <label for="alpha_${index}">Alpha</label>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <input type="text" name="keterangan[]" class="form-control" 
+                                   placeholder="Optional" maxlength="100">
+                            <div class="file-upload-wrapper" id="upload_wrapper_${index}">
+                                <input type="file" 
+                                       name="foto_bukti[${index}]" 
+                                       id="foto_bukti_${index}"
+                                       class="file-upload-input" 
+                                       accept="image/jpeg,image/jpg,image/png"
+                                       onchange="previewImage(${index})">
+                                <div class="file-info">
+                                    <i class="fas fa-info-circle"></i> Maks. 2MB (JPG, PNG)
+                                </div>
+                                <img id="preview_${index}" class="file-preview" alt="Preview">
+                            </div>
+                        </td>
+                    </tr>
+                `;
             });
+        }
+
+        mahasiswaTableContainer.style.display = 'block';
+        loadingOverlay.classList.remove('active');
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Gagal memuat data mahasiswa: ' + error.message);
+        loadingOverlay.classList.remove('active');
     });
+});
 });
 
 // Function to set all status

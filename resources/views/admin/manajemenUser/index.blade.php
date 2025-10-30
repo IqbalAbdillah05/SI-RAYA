@@ -86,11 +86,36 @@
         </div>
     </div>
 
+    <!-- Bulk Actions Bar -->
+    <div class="bulk-actions-bar" id="bulkActionsBar" style="display: none;">
+        <div class="bulk-info">
+            <span id="selectedCount">0</span> data dipilih
+        </div>
+        <div class="bulk-buttons">
+            <button type="button" class="btn btn-danger btn-sm" onclick="bulkDelete()">
+                <i class="fas fa-trash"></i> Hapus Terpilih
+            </button>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="clearSelection()">
+                <i class="fas fa-times"></i> Batal
+            </button>
+        </div>
+    </div>
+
+    <!-- Bulk Delete Form -->
+    <form id="bulkDeleteForm" action="{{ route('admin.manajemen-user.bulkDestroy') }}" method="POST" style="display: none;">
+        @csrf
+        @method('DELETE')
+        <input type="hidden" name="user_ids" id="bulkDeleteIds">
+    </form>
+
     <!-- Table -->
     <div class="table-wrapper">
         <table class="data-table">
             <thead>
                 <tr>
+                    <th style="width: 40px;">
+                        <input type="checkbox" id="checkAll" onchange="toggleCheckAll(this)">
+                    </th>
                     <th>No.</th>
                     <th>Nama & Email</th>
                     <th>Role</th>
@@ -130,6 +155,9 @@
                     };
                 @endphp
                 <tr data-role="{{ $user->role }}" data-status="{{ $statusMahasiswa }}">
+                    <td>
+                        <input type="checkbox" class="user-checkbox" value="{{ $user->id }}" onchange="updateBulkActions()">
+                    </td>
                     <td>{{ $users->firstItem() + $index }}</td>
                     <td>
                         <div class="user-info">
@@ -192,7 +220,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="7" style="text-align: center; padding: 40px;">
+                    <td colspan="8" style="text-align: center; padding: 40px;">
                         <div class="empty-state">
                             <i class="fas fa-inbox" style="font-size: 3rem; color: #ccc; margin-bottom: 10px;"></i>
                             <p>Belum ada data user</p>
@@ -276,6 +304,24 @@
         opacity: 0.9;
     }
 
+    .btn-danger {
+        background: #dc3545;
+        color: white;
+    }
+
+    .btn-danger:hover {
+        opacity: 0.9;
+    }
+
+    .btn-secondary {
+        background: #6c757d;
+        color: white;
+    }
+
+    .btn-secondary:hover {
+        opacity: 0.9;
+    }
+
     .btn-sm {
         padding: 6px 12px;
         font-size: 13px;
@@ -317,6 +363,45 @@
 
     .close-alert:hover {
         opacity: 1;
+    }
+
+    /* Bulk Actions Bar */
+    .bulk-actions-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: #fff3cd;
+        border: 1px solid #ffc107;
+        border-radius: 3px;
+        padding: 12px 15px;
+        margin-bottom: 15px;
+        animation: slideDown 0.3s ease;
+    }
+
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .bulk-info {
+        font-weight: 600;
+        color: #856404;
+    }
+
+    .bulk-info span {
+        color: #dc3545;
+        font-size: 16px;
+    }
+
+    .bulk-buttons {
+        display: flex;
+        gap: 10px;
     }
 
     /* Controls */
@@ -401,6 +486,14 @@
 
     .data-table tbody tr:last-child td {
         border-bottom: none;
+    }
+
+    /* Checkbox Styling */
+    input[type="checkbox"] {
+        width: 16px;
+        height: 16px;
+        cursor: pointer;
+        accent-color: #007bff;
     }
 
     /* User Info with Avatar */
@@ -748,6 +841,20 @@
             gap: 10px;
             align-items: flex-start;
         }
+
+        .bulk-actions-bar {
+            flex-direction: column;
+            gap: 10px;
+            align-items: stretch;
+        }
+
+        .bulk-buttons {
+            width: 100%;
+        }
+
+        .bulk-buttons .btn {
+            flex: 1;
+        }
     }
 </style>
 @endpush
@@ -783,6 +890,66 @@
             });
         }
     });
+
+    // Bulk Delete Functions
+    function toggleCheckAll(checkbox) {
+        const checkboxes = document.querySelectorAll('.user-checkbox');
+        checkboxes.forEach(cb => {
+            cb.checked = checkbox.checked;
+        });
+        updateBulkActions();
+    }
+
+    function updateBulkActions() {
+        const checkboxes = document.querySelectorAll('.user-checkbox:checked');
+        const bulkActionsBar = document.getElementById('bulkActionsBar');
+        const selectedCount = document.getElementById('selectedCount');
+        const checkAll = document.getElementById('checkAll');
+        
+        const count = checkboxes.length;
+        selectedCount.textContent = count;
+        
+        if (count > 0) {
+            bulkActionsBar.style.display = 'flex';
+        } else {
+            bulkActionsBar.style.display = 'none';
+        }
+
+        // Update "check all" checkbox state
+        const allCheckboxes = document.querySelectorAll('.user-checkbox');
+        checkAll.checked = count === allCheckboxes.length && count > 0;
+        checkAll.indeterminate = count > 0 && count < allCheckboxes.length;
+    }
+
+    function bulkDelete() {
+        const checkboxes = document.querySelectorAll('.user-checkbox:checked');
+        
+        if (checkboxes.length === 0) {
+            alert('Pilih minimal 1 user untuk dihapus!');
+            return;
+        }
+
+        const userIds = Array.from(checkboxes).map(cb => cb.value);
+        const count = userIds.length;
+        
+        if (confirm(`Apakah Anda yakin ingin menghapus ${count} user yang dipilih?\n\nTindakan ini tidak dapat dibatalkan!`)) {
+            document.getElementById('bulkDeleteIds').value = JSON.stringify(userIds);
+            document.getElementById('bulkDeleteForm').submit();
+        }
+    }
+
+    function clearSelection() {
+        const checkboxes = document.querySelectorAll('.user-checkbox');
+        const checkAll = document.getElementById('checkAll');
+        
+        checkboxes.forEach(cb => {
+            cb.checked = false;
+        });
+        checkAll.checked = false;
+        checkAll.indeterminate = false;
+        
+        updateBulkActions();
+    }
 </script>
 @endpush
 @endsection

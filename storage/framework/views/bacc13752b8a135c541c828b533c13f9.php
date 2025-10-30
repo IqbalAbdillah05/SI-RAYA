@@ -114,7 +114,7 @@
     }
 
     .btn-primary:hover {
-        background: #2563eb;
+        background: #e0a800;
     }
 
     .btn-secondary {

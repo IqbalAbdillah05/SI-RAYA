@@ -29,7 +29,7 @@ class KrsController extends Controller
             ->orderBy('tahun_ajaran', 'desc')
             ->get();
 
-        return view('mahasiswa.krs.index', compact('mahasiswa', 'krsList'));
+        return view('Mahasiswa.krs.index', compact('mahasiswa', 'krsList'));
     }
 
     public function create()

@@ -26,6 +26,14 @@ class MataKuliah extends Model
         'semester' => 'integer',
         'js' => 'integer',
     ];
+
+    // Validasi kode matakuliah
+    public static function rules()
+    {
+        return [
+            'kode_matakuliah' => 'required|string|max:20|unique:mata_kuliah,kode_matakuliah',
+        ];
+    }
     
     /**
      * Nilai yang valid untuk kolom jenis_mk

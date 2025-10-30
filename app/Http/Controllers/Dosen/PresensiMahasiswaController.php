@@ -418,20 +418,60 @@ class PresensiMahasiswaController extends Controller
     }
     
     /**
-     * Get mata kuliah by prodi and semester based on dosen's jadwal (AJAX)
-     */
-    public function getMatakuliah(Request $request)
-    {
-        $dosen = Auth::user()->dosen;
+ * Get mata kuliah by prodi and semester based on dosen's jadwal (AJAX)
+ */
+public function getMatakuliah(Request $request)
+{
+    try {
+        \Log::info('getMatakuliah called', [
+            'prodi_id' => $request->prodi_id,
+            'semester' => $request->semester,
+            'user_id' => Auth::id()
+        ]);
+
+        $user = Auth::user();
         
-        $matakuliah = MataKuliah::whereHas('jadwal', function($query) use ($dosen, $request) {
-            $query->where('dosen_id', $dosen->id)
-                ->where('prodi_id', $request->prodi_id)
-                ->where('semester', $request->semester);
-        })->get(['id', 'kode_matakuliah', 'nama_matakuliah', 'sks']);
+        if (!$user || !$user->dosen) {
+            \Log::error('User tidak memiliki relasi dosen');
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+        
+        $dosen = $user->dosen;
+        $prodiId = $request->prodi_id;
+        $semester = $request->semester;
+        
+        // Validasi input
+        if (!$prodiId || !$semester) {
+            \Log::error('Prodi atau semester kosong');
+            return response()->json(['error' => 'Prodi dan semester harus diisi'], 400);
+        }
+        
+        // Gunakan DB::table untuk query lebih robust
+        $matakuliah = DB::table('mata_kuliah')
+            ->join('jadwal', 'mata_kuliah.id', '=', 'jadwal.mata_kuliah_id')
+            ->where('jadwal.dosen_id', $dosen->id)
+            ->where('jadwal.prodi_id', $prodiId)
+            ->where('jadwal.semester', $semester)
+            ->select(
+                'mata_kuliah.id',
+                'mata_kuliah.kode_matakuliah',
+                'mata_kuliah.nama_matakuliah',
+                'mata_kuliah.sks'
+            )
+            ->distinct()
+            ->get();
+        
+        \Log::info('Mata kuliah found: ' . $matakuliah->count());
         
         return response()->json($matakuliah);
+        
+    } catch (\Exception $e) {
+        \Log::error('Error getMatakuliah: ' . $e->getMessage());
+        return response()->json([
+            'error' => 'Terjadi kesalahan: ' . $e->getMessage()
+        ], 500);
     }
+}
     
     /**
      * Get mahasiswa by prodi and semester (AJAX)

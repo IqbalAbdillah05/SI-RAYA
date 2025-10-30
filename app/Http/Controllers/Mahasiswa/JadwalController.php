@@ -34,7 +34,7 @@ class JadwalController extends Controller
         
         // Jika tidak ada KRS, tampilkan pesan
         if (!$krs) {
-            return view('mahasiswa.jadwal.index', compact(
+            return view('Mahasiswa.jadwal.index', compact(
                 'semesterList',
                 'selectedSemester',
                 'mahasiswa'
@@ -60,7 +60,7 @@ class JadwalController extends Controller
         // Group jadwal by hari
         $jadwalByHari = $jadwalList->groupBy('hari');
         
-        return view('mahasiswa.jadwal.index', compact(
+        return view('Mahasiswa.jadwal.index', compact(
             'jadwalList',
             'jadwalByHari',
             'semesterList',

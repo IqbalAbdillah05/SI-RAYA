@@ -34,7 +34,7 @@ class KhsController extends Controller
             ->with(['details.mataKuliah', 'prodi'])
             ->first();
 
-        return view('mahasiswa.khs.index', compact(
+        return view('Mahasiswa.khs.index', compact(
             'mahasiswa',
             'khs',
             'selectedSemester',
@@ -64,7 +64,7 @@ class KhsController extends Controller
         }
 
         // Generate PDF
-        $pdf = Pdf::loadView('mahasiswa.khs.pdf', compact('khs', 'mahasiswa'));
+        $pdf = Pdf::loadView('Mahasiswa.khs.pdf', compact('khs', 'mahasiswa'));
         
         // Set paper size dan orientasi
         $pdf->setPaper('A4', 'portrait');

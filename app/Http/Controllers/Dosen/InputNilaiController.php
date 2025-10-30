@@ -304,11 +304,34 @@ class InputNilaiController extends Controller
      */
     public function getMatakuliah(Request $request)
     {
-        $matakuliah = MataKuliah::where('prodi_id', $request->prodi_id)
-            ->where('semester', $request->semester)
-            ->get(['id', 'kode_matakuliah', 'nama_matakuliah', 'sks']);
-        
-        return response()->json($matakuliah);
+        try {
+            \Log::info('getMatakuliah called', [
+                'prodi_id' => $request->prodi_id,
+                'semester' => $request->semester,
+                'user_id' => Auth::id()
+            ]);
+
+            // Validasi input
+            if (!$request->prodi_id || !$request->semester) {
+                \Log::error('Prodi atau semester kosong');
+                return response()->json(['error' => 'Prodi dan semester harus diisi'], 400);
+            }
+
+            // Ambil mata kuliah berdasarkan prodi dan semester
+            $matakuliah = MataKuliah::where('prodi_id', $request->prodi_id)
+                ->where('semester', $request->semester)
+                ->get(['id', 'kode_matakuliah', 'nama_matakuliah', 'sks']);
+            
+            \Log::info('Mata kuliah found: ' . $matakuliah->count());
+            
+            return response()->json($matakuliah);
+            
+        } catch (\Exception $e) {
+            \Log::error('Error getMatakuliah: ' . $e->getMessage());
+            return response()->json([
+                'error' => 'Terjadi kesalahan: ' . $e->getMessage()
+            ], 500);
+        }
     }
     
     /**

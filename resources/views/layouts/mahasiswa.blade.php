@@ -752,9 +752,9 @@
                 &copy; {{ date('Y') }} SI-RAYA - Sistem Informasi STAI RAYA
             </div>
             <div class="footer-links">
-                <a href="#" class="footer-link">Bantuan</a>
-                <a href="#" class="footer-link">Dokumentasi</a>
-                <a href="#" class="footer-link">Kontak</a>
+                <a href="{{ route('mahasiswa.bantuan.index') }}" class="footer-link">Bantuan</a>
+                <a href="{{ route('mahasiswa.bantuan.dokumentasi') }}" class="footer-link">Dokumentasi</a>
+                <a href="{{ route('mahasiswa.bantuan.kontak') }}" class="footer-link">Kontak</a>
             </div>
         </div>
     </footer>

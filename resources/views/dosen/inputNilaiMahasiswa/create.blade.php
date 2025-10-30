@@ -354,24 +354,76 @@ document.addEventListener('DOMContentLoaded', function() {
         const prodiId = prodiSelect.value;
         const semester = semesterSelect.value;
 
+        console.log('=== LOADING MATA KULIAH ===');
+        console.log('Prodi ID:', prodiId);
+        console.log('Semester:', semester);
+
         if (prodiId && semester) {
             loadingOverlay.classList.add('active');
             
-            fetch(`/dosen/input-nilai/get-matakuliah?prodi_id=${prodiId}&semester=${semester}`)
-                .then(response => response.json())
-                .then(data => {
-                    matakuliahSelect.innerHTML = '<option value="">Pilih Mata Kuliah</option>';
+            const url = `{{ route('dosen.inputNilai.getMatakuliah') }}?prodi_id=${prodiId}&semester=${semester}`;
+            console.log('Fetch URL:', url);
+            
+            fetch(url, {
+                method: 'GET',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                credentials: 'same-origin'
+            })
+            .then(response => {
+                console.log('Response Status:', response.status);
+                console.log('Response OK:', response.ok);
+                
+                if (!response.ok) {
+                    return response.text().then(text => {
+                        console.error('Error Response:', text);
+                        throw new Error(`HTTP ${response.status}: ${text}`);
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Data received:', data);
+                
+                matakuliahSelect.innerHTML = '<option value="">Pilih Mata Kuliah</option>';
+                
+                if (data.error) {
+                    console.error('Server error:', data.error);
+                    alert('Error: ' + data.error);
+                    matakuliahSelect.innerHTML += '<option value="" disabled>Error memuat data</option>';
+                } else if (data.length === 0) {
+                    console.warn('No data found');
+                    matakuliahSelect.innerHTML += '<option value="" disabled>Tidak ada mata kuliah untuk prodi dan semester ini</option>';
+                } else {
+                    console.log('Adding options, count:', data.length);
                     data.forEach(mk => {
-                        matakuliahSelect.innerHTML += `<option value="${mk.id}">${mk.kode_matakuliah} - ${mk.nama_matakuliah}</option>`;
+                        const option = document.createElement('option');
+                        option.value = mk.id;
+                        option.textContent = `${mk.kode_matakuliah} - ${mk.nama_matakuliah}`;
+                        matakuliahSelect.appendChild(option);
                     });
                     matakuliahSelect.disabled = false;
-                    loadingOverlay.classList.remove('active');
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Gagal memuat data mata kuliah');
-                    loadingOverlay.classList.remove('active');
-                });
+                }
+                
+                loadingOverlay.classList.remove('active');
+                console.log('=== DONE ===');
+            })
+            .catch(error => {
+                console.error('=== FETCH ERROR ===');
+                console.error('Error:', error);
+                
+                matakuliahSelect.innerHTML = '<option value="">Pilih Mata Kuliah</option>';
+                matakuliahSelect.innerHTML += '<option value="" disabled>Gagal memuat data</option>';
+                
+                alert('Gagal memuat data mata kuliah. Error: ' + error.message + '\n\nCek console browser (F12) untuk detail.');
+                loadingOverlay.classList.remove('active');
+            });
+        } else {
+            matakuliahSelect.innerHTML = '<option value="">Pilih Mata Kuliah</option>';
+            matakuliahSelect.disabled = true;
         }
     }
 
@@ -398,6 +450,11 @@ document.addEventListener('DOMContentLoaded', function() {
         const matakuliahId = matakuliahSelect.value;
         const tahunAjaran = document.getElementById('tahunAjaranInput').value;
 
+        console.log('=== LOADING MAHASISWA ===');
+        console.log('Prodi ID:', prodiId);
+        console.log('Semester:', semester);
+        console.log('Mata Kuliah ID:', matakuliahId);
+
         if (!prodiId || !semester || !matakuliahId) {
             alert('Mohon lengkapi semua filter terlebih dahulu');
             return;
@@ -410,76 +467,111 @@ document.addEventListener('DOMContentLoaded', function() {
 
         loadingOverlay.classList.add('active');
 
-        fetch(`/dosen/mahasiswa/by-prodi-semester?prodi_id=${prodiId}&semester=${semester}&matakuliah_id=${matakuliahId}`)
-            .then(response => response.json())
-            .then(data => {
-                mahasiswaTableBody.innerHTML = '';
-                
-                if (data.length === 0) {
-                    mahasiswaTableBody.innerHTML = `
+        const url = `{{ route('dosen.mahasiswa.byProdiSemester') }}?prodi_id=${prodiId}&semester=${semester}&matakuliah_id=${matakuliahId}`;
+        console.log('Fetch URL:', url);
+
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            credentials: 'same-origin'
+        })
+        .then(response => {
+            console.log('Response Status:', response.status);
+            console.log('Response OK:', response.ok);
+
+            if (!response.ok) {
+                return response.text().then(text => {
+                    console.error('Error Response:', text);
+                    throw new Error(`HTTP ${response.status}: ${text}`);
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Data received:', data);
+
+            mahasiswaTableBody.innerHTML = '';
+
+            if (data.length === 0) {
+                mahasiswaTableBody.innerHTML = `
+                    <tr>
+                        <td colspan="6" style="text-align: center; color: #666;">
+                            Tidak ada mahasiswa ditemukan untuk mata kuliah yang dipilih
+                        </td>
+                    </tr>
+                `;
+            } else {
+                data.forEach((mhs, index) => {
+                    mahasiswaTableBody.innerHTML += `
                         <tr>
-                            <td colspan="6" style="text-align: center; color: #666;">
-                                Tidak ada mahasiswa ditemukan untuk filter yang dipilih
+                            <td>${index + 1}</td>
+                            <td>${mhs.nim}</td>
+                            <td>${mhs.nama_lengkap}</td>
+                            <td>${mhs.prodi ? mhs.prodi.nama_prodi : '-'}</td>
+                            <td>
+                                <input type="hidden" name="mahasiswa_id[]" value="${mhs.id}">
+                                <input type="number" name="nilai_angka[]" class="form-control nilai-angka" 
+                                       min="0" max="100" step="0.01" required 
+                                       data-index="${index}">
+                            </td>
+                            <td>
+                                <input type="text" class="form-control nilai-huruf" 
+                                       readonly style="background-color: #f5f5f5;" 
+                                       data-index="${index}">
                             </td>
                         </tr>
                     `;
-                } else {
-                    data.forEach((mhs, index) => {
-                        mahasiswaTableBody.innerHTML += `
-                            <tr>
-                                <td>${index + 1}</td>
-                                <td>${mhs.nim}</td>
-                                <td>${mhs.nama_lengkap}</td>
-                                <td>${mhs.prodi ? mhs.prodi.nama_prodi : '-'}</td>
-                                <td>
-                                    <input type="hidden" name="mahasiswa_id[]" value="${mhs.id}">
-                                    <input type="number" name="nilai_angka[]" class="form-control nilai-angka" 
-                                           min="0" max="100" step="0.01" required 
-                                           data-index="${index}">
-                                </td>
-                                <td>
-                                    <input type="text" class="form-control nilai-huruf" 
-                                           readonly style="background-color: #f5f5f5;" 
-                                           data-index="${index}">
-                                </td>
-                            </tr>
-                        `;
+                });
+
+                // Add event listeners for auto-conversion
+                document.querySelectorAll('.nilai-angka').forEach(input => {
+                    input.addEventListener('input', function() {
+                        const index = this.dataset.index;
+                        const nilaiHurufInput = document.querySelector(`.nilai-huruf[data-index="${index}"]`);
+                        const nilai = parseFloat(this.value);
+
+                        if (!isNaN(nilai)) {
+                            // Conversion based on NilaiMahasiswa model
+                            if (nilai >= 96) nilaiHurufInput.value = 'A+';
+                            else if (nilai >= 86) nilaiHurufInput.value = 'A';
+                            else if (nilai >= 81) nilaiHurufInput.value = 'A-';
+                            else if (nilai >= 76) nilaiHurufInput.value = 'B+';
+                            else if (nilai >= 71) nilaiHurufInput.value = 'B';
+                            else if (nilai >= 66) nilaiHurufInput.value = 'B-';
+                            else if (nilai >= 61) nilaiHurufInput.value = 'C+';
+                            else if (nilai >= 56) nilaiHurufInput.value = 'C';
+                            else if (nilai >= 41) nilaiHurufInput.value = 'D';
+                            else nilaiHurufInput.value = 'E';
+                        } else {
+                            nilaiHurufInput.value = '';
+                        }
                     });
+                });
+            }
 
-                    // Add event listeners for auto-conversion
-                    document.querySelectorAll('.nilai-angka').forEach(input => {
-                        input.addEventListener('input', function() {
-                            const index = this.dataset.index;
-                            const nilaiHurufInput = document.querySelector(`.nilai-huruf[data-index="${index}"]`);
-                            const nilai = parseFloat(this.value);
+            mahasiswaTableContainer.style.display = 'block';
+            loadingOverlay.classList.remove('active');
+            console.log('=== DONE ===');
+        })
+        .catch(error => {
+            console.error('=== FETCH ERROR ===');
+            console.error('Error:', error);
 
-                            if (!isNaN(nilai)) {
-                                // Konversi sesuai dengan model NilaiMahasiswa
-                                if (nilai >= 96) nilaiHurufInput.value = 'A+';
-                                else if (nilai >= 86) nilaiHurufInput.value = 'A';
-                                else if (nilai >= 81) nilaiHurufInput.value = 'A-';
-                                else if (nilai >= 76) nilaiHurufInput.value = 'B+';
-                                else if (nilai >= 71) nilaiHurufInput.value = 'B';
-                                else if (nilai >= 66) nilaiHurufInput.value = 'B-';
-                                else if (nilai >= 61) nilaiHurufInput.value = 'C+';
-                                else if (nilai >= 56) nilaiHurufInput.value = 'C';
-                                else if (nilai >= 41) nilaiHurufInput.value = 'D';
-                                else nilaiHurufInput.value = 'E';
-                            } else {
-                                nilaiHurufInput.value = '';
-                            }
-                        });
-                    });
-                }
+            mahasiswaTableBody.innerHTML = `
+                <tr>
+                    <td colspan="6" style="text-align: center; color: #666;">
+                        Gagal memuat data mahasiswa. Error: ${error.message}
+                    </td>
+                </tr>
+            `;
 
-                mahasiswaTableContainer.style.display = 'block';
-                loadingOverlay.classList.remove('active');
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Gagal memuat data mahasiswa');
-                loadingOverlay.classList.remove('active');
-            });
+            alert('Gagal memuat data mahasiswa. Error: ' + error.message + '\n\nCek console browser (F12) untuk detail.');
+            loadingOverlay.classList.remove('active');
+        });
     });
 });
 </script>

@@ -361,6 +361,23 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <div class="dokumentasi-footer">
+        <div class="footer-contact">
+            <h3>Masih Butuh Bantuan?</h3>
+            <p>Jika pertanyaan Anda tidak terjawab di sini, silakan hubungi tim support kami</p>
+            <div class="contact-actions">
+                <a href="{{ route('mahasiswa.bantuan.kontak') }}" class="btn-contact primary">
+                    <i class="fas fa-headset"></i> Hubungi Admin
+                </a>
+                <a href="{{ route('mahasiswa.bantuan.index') }}" class="btn-contact secondary">
+                    <i class="fas fa-book-open"></i> Lihat FAQ
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
 
 @push('styles')
 <style>
@@ -919,6 +936,115 @@
         }
 
         .help-section {
+            padding: 2rem 1.5rem;
+        }
+    }
+
+    .dokumentasi-footer {
+        margin-top: 2rem;
+    }
+
+    .footer-contact {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--hover) 100%);
+        border-radius: var(--radius);
+        padding: 3rem 2rem;
+        text-align: center;
+        color: white;
+        box-shadow: var(--shadow-lg);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .footer-contact::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        animation: pulse 15s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+    }
+
+    .footer-contact h3 {
+        font-size: 1.75rem;
+        margin-bottom: 0.75rem;
+        font-weight: 800;
+        position: relative;
+        z-index: 1;
+    }
+
+    .footer-contact p {
+        margin-bottom: 2rem;
+        opacity: 0.95;
+        font-size: 1.05rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .contact-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+        position: relative;
+        z-index: 1;
+    }
+
+    .btn-contact {
+        padding: 0.875rem 1.75rem;
+        border-radius: 10px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        border: 2px solid transparent;
+    }
+
+    .btn-contact.primary {
+        background: white;
+        color: var(--primary);
+    }
+
+    .btn-contact.primary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        background: var(--accent);
+        color: white;
+    }
+
+    .btn-contact.secondary {
+        background: rgba(255, 255, 255, 0.15);
+        color: white;
+        border: 2px solid white;
+        backdrop-filter: blur(10px);
+    }
+
+    .btn-contact.secondary:hover {
+        transform: translateY(-3px);
+        background: white;
+        color: var(--primary);
+    }
+
+    @media (max-width: 768px) {
+        .contact-actions {
+            flex-direction: column;
+        }
+
+        .btn-contact {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .footer-contact {
             padding: 2rem 1.5rem;
         }
     }

@@ -49,6 +49,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/', [ManajemenUserController::class, 'index'])->name('index');
             Route::get('/create', [ManajemenUserController::class, 'create'])->name('create');
             Route::post('/', [ManajemenUserController::class, 'store'])->name('store');
+            Route::delete('/bulk-destroy', [ManajemenUserController::class, 'bulkDestroy'])->name('bulkDestroy');
             Route::get('/export-dosen-mahasiswa', [ManajemenUserController::class, 'exportDosenMahasiswa'])->name('exportDosenMahasiswa');
             Route::post('/import-mahasiswa', [ManajemenUserController::class, 'importMahasiswa'])->name('importMahasiswa');
             Route::post('/import-dosen', [ManajemenUserController::class, 'importDosen'])->name('importDosen');
@@ -134,6 +135,8 @@ Route::middleware('auth')->group(function () {
             Route::get('/', [ManajemenMataKuliahController::class, 'index'])->name('index');
             Route::get('/create', [ManajemenMataKuliahController::class, 'create'])->name('create');
             Route::post('/', [ManajemenMataKuliahController::class, 'store'])->name('store');
+            Route::post('/import', [ManajemenMataKuliahController::class, 'processImport'])->name('import.process');
+            Route::get('/template', [ManajemenMataKuliahController::class, 'downloadTemplate'])->name('template');
             Route::get('/{mataKuliah}', [ManajemenMataKuliahController::class, 'show'])->name('show');
             Route::get('/{mataKuliah}/edit', [ManajemenMataKuliahController::class, 'edit'])->name('edit');
             Route::put('/{mataKuliah}', [ManajemenMataKuliahController::class, 'update'])->name('update');
@@ -208,13 +211,13 @@ Route::middleware('auth')->group(function () {
         // Bantuan
         Route::prefix('bantuan')->name('bantuan.')->group(function () {
             Route::get('/', function () {
-                return view('mahasiswa.bantuan.index');
+                return view('Mahasiswa.bantuan.index');
             })->name('index');
             Route::get('/dokumentasi', function () {
-                return view('mahasiswa.bantuan.dokumentasi');
+                return view('Mahasiswa.bantuan.dokumentasi');
             })->name('dokumentasi');
             Route::get('/kontak', function () {
-                return view('mahasiswa.bantuan.kontak');
+                return view('Mahasiswa.bantuan.kontak');
             })->name('kontak');
         });
     });

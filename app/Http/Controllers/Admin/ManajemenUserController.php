@@ -59,7 +59,129 @@ class ManajemenUserController extends Controller
 
         return view('admin.manajemenUser.index', compact('users', 'role', 'counts'));
     }
+/**
+ * Bulk delete users
+ */
+public function bulkDestroy(Request $request)
+{
+    try {
+        \Log::info('=== BULK DELETE START ===');
+        
+        // Validasi input
+        $request->validate([
+            'user_ids' => 'required|json'
+        ]);
 
+        $userIds = json_decode($request->user_ids, true);
+        
+        if (empty($userIds) || !is_array($userIds)) {
+            return redirect()
+                ->route('admin.manajemen-user.index')
+                ->with('error', 'Tidak ada user yang dipilih untuk dihapus!');
+        }
+
+        \Log::info('User IDs to delete:', ['ids' => $userIds]);
+
+        DB::beginTransaction();
+
+        try {
+            $deletedCount = 0;
+            $errors = [];
+
+            foreach ($userIds as $userId) {
+                try {
+                    $user = User::find($userId);
+                    
+                    if (!$user) {
+                        $errors[] = "User ID {$userId} tidak ditemukan";
+                        continue;
+                    }
+
+                    // Cegah penghapusan akun admin yang sedang login
+                    if ($user->id === auth()->id()) {
+                        $errors[] = "Tidak dapat menghapus akun Anda sendiri";
+                        continue;
+                    }
+
+                    // Delete photo if exists
+                    if ($user->role === 'mahasiswa' && $user->mahasiswaProfile && $user->mahasiswaProfile->pas_foto) {
+                        Storage::disk('public')->delete($user->mahasiswaProfile->pas_foto);
+                        \Log::info('Deleted mahasiswa photo', ['user_id' => $userId]);
+                    } elseif ($user->role === 'dosen' && $user->dosenProfile && $user->dosenProfile->pas_foto) {
+                        Storage::disk('public')->delete($user->dosenProfile->pas_foto);
+                        \Log::info('Deleted dosen photo', ['user_id' => $userId]);
+                    }
+
+                    // Delete profile first (due to foreign key)
+                    if ($user->role === 'mahasiswa' && $user->mahasiswaProfile) {
+                        $user->mahasiswaProfile->delete();
+                        \Log::info('Mahasiswa profile deleted', ['user_id' => $userId]);
+                    } elseif ($user->role === 'dosen' && $user->dosenProfile) {
+                        $user->dosenProfile->delete();
+                        \Log::info('Dosen profile deleted', ['user_id' => $userId]);
+                    }
+
+                    // Delete user
+                    $userName = $user->name;
+                    $user->delete();
+                    \Log::info('User deleted', ['user_id' => $userId, 'name' => $userName]);
+                    
+                    $deletedCount++;
+
+                } catch (\Exception $e) {
+                    \Log::error('Error deleting user', [
+                        'user_id' => $userId,
+                        'error' => $e->getMessage()
+                    ]);
+                    $errors[] = "Gagal menghapus user ID {$userId}: " . $e->getMessage();
+                }
+            }
+
+            DB::commit();
+            \Log::info('=== BULK DELETE SUCCESS ===', [
+                'deleted_count' => $deletedCount,
+                'errors_count' => count($errors)
+            ]);
+
+            // Prepare response message
+            if ($deletedCount > 0 && count($errors) === 0) {
+                return redirect()
+                    ->route('admin.manajemen-user.index')
+                    ->with('success', "Berhasil menghapus {$deletedCount} user!");
+            } elseif ($deletedCount > 0 && count($errors) > 0) {
+                return redirect()
+                    ->route('admin.manajemen-user.index')
+                    ->with('success', "Berhasil menghapus {$deletedCount} user!")
+                    ->with('warning', 'Beberapa user gagal dihapus: ' . implode(', ', $errors));
+            } else {
+                return redirect()
+                    ->route('admin.manajemen-user.index')
+                    ->with('error', 'Gagal menghapus user: ' . implode(', ', $errors));
+            }
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            \Log::error('Bulk delete transaction error:', [
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ]);
+
+            return redirect()
+                ->route('admin.manajemen-user.index')
+                ->with('error', 'Gagal menghapus user: ' . $e->getMessage());
+        }
+
+    } catch (\Exception $e) {
+        \Log::error('Bulk delete controller error:', [
+            'message' => $e->getMessage()
+        ]);
+
+        return redirect()
+            ->route('admin.manajemen-user.index')
+            ->with('error', 'Terjadi kesalahan sistem: ' . $e->getMessage());
+    }
+}
     public function create()
     {
         $roles = ['admin', 'dosen', 'mahasiswa'];

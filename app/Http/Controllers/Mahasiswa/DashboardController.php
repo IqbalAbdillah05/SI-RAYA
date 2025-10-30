@@ -36,7 +36,7 @@ class DashboardController extends Controller
         }
         
         if (!$mahasiswa) {
-            return view('mahasiswa.dashboard', [
+            return view('Mahasiswa.dashboard', [
                 'user' => $user,
                 'mahasiswa' => null,
                 'semesterAktif' => $semesterAktif,
@@ -109,7 +109,7 @@ class DashboardController extends Controller
             ->orderBy('created_at', 'desc')
             ->first();
         
-        return view('mahasiswa.dashboard', [
+        return view('Mahasiswa.dashboard', [
             'user' => $user,
             'mahasiswa' => $mahasiswa,
             'semesterAktif' => $semesterAktif,
