@@ -28,15 +28,33 @@ class ManajemenMataKuliahController extends Controller
             });
         }
 
+        // Prodi filter
+        if ($request->has('prodi') && $request->prodi != '') {
+            $query->where('prodi_id', $request->prodi);
+        }
+
+        // Semester filter
+        if ($request->has('semester') && $request->semester != '') {
+            $query->where('semester', $request->semester);
+        }
+
         // Pagination with entries per page
         $perPage = $request->get('entries', 10);
         $mataKuliahs = $query->latest()->paginate($perPage);
 
         // Append query parameters to pagination links
-        $mataKuliahs->appends($request->only(['search', 'entries']));
+        $mataKuliahs->appends($request->only(['search', 'entries', 'prodi', 'semester']));
+
+        // Get all prodi for filter dropdown
+        $prodis = Prodi::orderBy('nama_prodi')->get();
+
+        // Semester options
+        $semesters = range(1, 8);
 
         return view('admin.manajemenMataKuliah.index', compact(
-            'mataKuliahs'
+            'mataKuliahs',
+            'prodis',
+            'semesters'
         ));
     }
 

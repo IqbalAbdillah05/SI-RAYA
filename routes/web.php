@@ -26,6 +26,7 @@ use App\Http\Controllers\Mahasiswa\DashboardController as MahasiswaDashboardCont
 use App\Http\Controllers\Mahasiswa\JadwalController as MahasiswaJadwalController;
 use App\Http\Controllers\Mahasiswa\KhsController as MahasiswaKhsController;
 use App\Http\Controllers\Mahasiswa\KrsController as MahasiswaKrsController;
+use App\Http\Controllers\Mahasiswa\PresensiMahasiswaController as MahasiswaPresensiMahasiswaController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -206,6 +207,21 @@ Route::middleware('auth')->group(function () {
             Route::get('/{krs}/edit', [MahasiswaKrsController::class, 'edit'])->name('edit');
             Route::put('/{krs}', [MahasiswaKrsController::class, 'update'])->name('update');
             Route::delete('/{krs}', [MahasiswaKrsController::class, 'destroy'])->name('destroy');
+        });
+        
+        // Presensi Mahasiswa
+        Route::prefix('presensi')->name('presensi.')->group(function () {
+            Route::get('/riwayat', [MahasiswaPresensiMahasiswaController::class, 'riwayat'])->name('riwayat');
+            Route::get('/filter', [MahasiswaPresensiMahasiswaController::class, 'filterPresensi'])->name('filter'); // ⭐ UBAH INI
+            Route::get('/', [MahasiswaPresensiMahasiswaController::class, 'index'])->name('index');
+            Route::get('/create', [MahasiswaPresensiMahasiswaController::class, 'create'])->name('create');
+            Route::post('/', [MahasiswaPresensiMahasiswaController::class, 'store'])->name('store');
+            Route::get('/get-matakuliah', [MahasiswaPresensiMahasiswaController::class, 'getMatakuliah'])->name('getMatakuliah');
+            Route::get('/get-mahasiswa', [MahasiswaPresensiMahasiswaController::class, 'getMahasiswaByProdiSemester'])->name('getMahasiswa');
+            Route::get('/{id}', [MahasiswaPresensiMahasiswaController::class, 'show'])->name('show');
+            Route::get('/{id}/edit', [MahasiswaPresensiMahasiswaController::class, 'edit'])->name('edit');
+            Route::put('/{id}', [MahasiswaPresensiMahasiswaController::class, 'update'])->name('update');
+            Route::delete('/{id}', [MahasiswaPresensiMahasiswaController::class, 'destroy'])->name('destroy');
         });
         
         // Bantuan

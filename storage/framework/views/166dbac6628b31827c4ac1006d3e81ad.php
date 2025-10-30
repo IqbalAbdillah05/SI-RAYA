@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Sistem Informasi STAI RAYA - Dashboard Mahasiswa">
-    <title>@yield('title', 'Mahasiswa SI-RAYA STAI RAYA')</title>
+    <title><?php echo $__env->yieldContent('title', 'Mahasiswa SI-RAYA STAI RAYA'); ?></title>
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -637,14 +637,14 @@
         }
     </style>
     
-    @stack('styles')
+    <?php echo $__env->yieldPushContent('styles'); ?>
 </head>
 <body>
     <!-- Top Navigation Bar -->
     <nav class="top-navbar">
         <div class="navbar-container">
             <!-- Brand Logo -->
-            <a href="{{ route('mahasiswa.dashboard') }}" class="navbar-brand">
+            <a href="<?php echo e(route('mahasiswa.dashboard')); ?>" class="navbar-brand">
                 <div class="brand-logo">
                     <i class="fas fa-graduation-cap"></i>
                 </div>
@@ -656,32 +656,32 @@
 
             <!-- Desktop Navigation Menu -->
             <div class="navbar-menu">
-                <a href="{{ route('mahasiswa.dashboard') }}" class="nav-link {{ request()->routeIs('mahasiswa.dashboard') ? 'active' : '' }}">
+                <a href="<?php echo e(route('mahasiswa.dashboard')); ?>" class="nav-link <?php echo e(request()->routeIs('mahasiswa.dashboard') ? 'active' : ''); ?>">
                     <i class="fas fa-home"></i>
                     <span>Dashboard</span>
                 </a>
 
-                <a href="{{ route('mahasiswa.krs.index') }}" class="nav-link {{ request()->routeIs('mahasiswa.krs.*') ? 'active' : '' }}">
+                <a href="<?php echo e(route('mahasiswa.krs.index')); ?>" class="nav-link <?php echo e(request()->routeIs('mahasiswa.krs.*') ? 'active' : ''); ?>">
                     <i class="fas fa-edit"></i>
                     <span>KRS</span>
                 </a>
 
-                <a href="{{ route('mahasiswa.jadwal.index') }}" class="nav-link {{ request()->routeIs('mahasiswa.jadwal.*') ? 'active' : '' }}">
+                <a href="<?php echo e(route('mahasiswa.jadwal.index')); ?>" class="nav-link <?php echo e(request()->routeIs('mahasiswa.jadwal.*') ? 'active' : ''); ?>">
                     <i class="fas fa-calendar-alt"></i>
                     <span>Jadwal</span>
                 </a>
 
-                <a href="{{ route('mahasiswa.khs.index') }}" class="nav-link {{ request()->routeIs('mahasiswa.khs.*') ? 'active' : '' }}">
+                <a href="<?php echo e(route('mahasiswa.khs.index')); ?>" class="nav-link <?php echo e(request()->routeIs('mahasiswa.khs.*') ? 'active' : ''); ?>">
                     <i class="fas fa-file-alt"></i>
                     <span>KHS</span>
                 </a>
 
-                <a href="{{ route('mahasiswa.presensi.riwayat') }}" class="nav-link {{ request()->routeIs('mahasiswa.presensi.*') ? 'active' : '' }}">
-    <i class="fas fa-clipboard-list"></i>
-    <span>Presensi Mahasiswa</span>
-</a>
+                <a href="<?php echo e(route('mahasiswa.presensi.riwayat')); ?>" class="nav-link <?php echo e(request()->routeIs('mahasiswa.presensi.*') ? 'active' : ''); ?>">
+                    <i class="fas fa-clipboard-list"></i>
+                    <span>Presensi Mahasiswa</span>
+                </a>
 
-                <a href="{{ route('mahasiswa.bantuan.index') }}" class="nav-link {{ request()->routeIs('mahasiswa.bantuan.*') ? 'active' : '' }}">
+                <a href="<?php echo e(route('mahasiswa.bantuan.index')); ?>" class="nav-link <?php echo e(request()->routeIs('mahasiswa.bantuan.*') ? 'active' : ''); ?>">
                     <i class="fas fa-question-circle"></i>
                     <span>Bantuan</span>
                 </a>                
@@ -689,14 +689,14 @@
 
             <!-- User Section -->
             <div class="navbar-user">
-                <a href="{{ route('logout') }}" 
+                <a href="<?php echo e(route('logout')); ?>" 
                    class="logout-btn"
                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                     <i class="fas fa-sign-out-alt"></i>
                     <span>Keluar</span>
                 </a>
-                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                    @csrf
+                <form id="logout-form" action="<?php echo e(route('logout')); ?>" method="POST" style="display: none;">
+                    <?php echo csrf_field(); ?>
                 </form>
 
                 <!-- Mobile Menu Toggle -->
@@ -711,11 +711,11 @@
     <div class="mobile-menu" id="mobileMenu">
         <div class="mobile-nav-section">
             <div class="mobile-nav-title">Menu Utama</div>
-            <a href="{{ route('mahasiswa.dashboard') }}" class="mobile-nav-link {{ request()->routeIs('mahasiswa.dashboard') ? 'active' : '' }}">
+            <a href="<?php echo e(route('mahasiswa.dashboard')); ?>" class="mobile-nav-link <?php echo e(request()->routeIs('mahasiswa.dashboard') ? 'active' : ''); ?>">
                 <i class="fas fa-home"></i>
                 <span>Dashboard</span>
             </a>
-            <a href="{{ route('mahasiswa.jadwal.index') }}" class="mobile-nav-link {{ request()->routeIs('mahasiswa.jadwal.*') ? 'active' : '' }}">
+            <a href="<?php echo e(route('mahasiswa.jadwal.index')); ?>" class="mobile-nav-link <?php echo e(request()->routeIs('mahasiswa.jadwal.*') ? 'active' : ''); ?>">
                 <i class="fas fa-calendar-alt"></i>
                 <span>Jadwal Kuliah</span>
             </a>
@@ -723,23 +723,23 @@
 
         <div class="mobile-nav-section">
             <div class="mobile-nav-title">Akademik</div>
-            <a href="{{ route('mahasiswa.khs.index') }}" class="mobile-nav-link {{ request()->routeIs('mahasiswa.khs.*') ? 'active' : '' }}">
+            <a href="<?php echo e(route('mahasiswa.khs.index')); ?>" class="mobile-nav-link <?php echo e(request()->routeIs('mahasiswa.khs.*') ? 'active' : ''); ?>">
                 <i class="fas fa-file-alt"></i>
                 <span>Kartu Hasil Studi (KHS)</span>
             </a>
-            <a href="{{ route('mahasiswa.krs.index') }}" class="mobile-nav-link {{ request()->routeIs('mahasiswa.krs.*') ? 'active' : '' }}">
+            <a href="<?php echo e(route('mahasiswa.krs.index')); ?>" class="mobile-nav-link <?php echo e(request()->routeIs('mahasiswa.krs.*') ? 'active' : ''); ?>">
                 <i class="fas fa-edit"></i>
                 <span>Kartu Rencana Studi (KRS)</span>
             </a>
         </div>
 
         <div class="mobile-nav-section">
-    <div class="mobile-nav-title">Presensi</div>
-    <a href="{{ route('mahasiswa.presensi.riwayat') }}" class="mobile-nav-link {{ request()->routeIs('mahasiswa.presensi.*') ? 'active' : '' }}">
-        <i class="fas fa-clipboard-list"></i>
-        <span>Riwayat Presensi</span>
-    </a>
-</div>
+            <div class="mobile-nav-title">Presensi</div>
+            <a href="<?php echo e(route('mahasiswa.presensi.riwayat')); ?>" class="mobile-nav-link <?php echo e(request()->routeIs('mahasiswa.presensi.*') ? 'active' : ''); ?>">
+                <i class="fas fa-clipboard-list"></i>
+                <span>Riwayat Presensi</span>
+            </a>
+        </div>
     </div>
 
     <!-- Main Content -->
@@ -747,27 +747,27 @@
         <!-- Breadcrumb -->
         <div class="breadcrumb-container">
             <div class="breadcrumb">
-                <a href="{{ route('mahasiswa.dashboard') }}" class="breadcrumb-item">
+                <a href="<?php echo e(route('mahasiswa.dashboard')); ?>" class="breadcrumb-item">
                     <i class="fas fa-home"></i>
                 </a>
                 <i class="fas fa-chevron-right"></i>
-                <span class="breadcrumb-item active">@yield('title', 'Dashboard')</span>
+                <span class="breadcrumb-item active"><?php echo $__env->yieldContent('title', 'Dashboard'); ?></span>
             </div>
         </div>
 
-        @yield('content')
+        <?php echo $__env->yieldContent('content'); ?>
     </main>
 
     <!-- Footer -->
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-text">
-                &copy; {{ date('Y') }} SI-RAYA - Sistem Informasi STAI RAYA
+                &copy; <?php echo e(date('Y')); ?> SI-RAYA - Sistem Informasi STAI RAYA
             </div>
             <div class="footer-links">
-                <a href="{{ route('mahasiswa.bantuan.index') }}" class="footer-link">Bantuan</a>
-                <a href="{{ route('mahasiswa.bantuan.dokumentasi') }}" class="footer-link">Dokumentasi</a>
-                <a href="{{ route('mahasiswa.bantuan.kontak') }}" class="footer-link">Kontak</a>
+                <a href="<?php echo e(route('mahasiswa.bantuan.index')); ?>" class="footer-link">Bantuan</a>
+                <a href="<?php echo e(route('mahasiswa.bantuan.dokumentasi')); ?>" class="footer-link">Dokumentasi</a>
+                <a href="<?php echo e(route('mahasiswa.bantuan.kontak')); ?>" class="footer-link">Kontak</a>
             </div>
         </div>
     </footer>
@@ -836,6 +836,6 @@
         }
     </script>
 
-    @stack('scripts')
+    <?php echo $__env->yieldPushContent('scripts'); ?>
 </body>
-</html>
+</html><?php /**PATH C:\laragon\www\si-raya\resources\views/layouts/mahasiswa.blade.php ENDPATH**/ ?>

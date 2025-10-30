@@ -1,14 +1,14 @@
 
 
-<?php $__env->startSection('title', 'Manajemen Mata Kuliah'); ?>
+<?php $__env->startSection('title', 'Manajemen Program Studi'); ?>
 
 <?php $__env->startSection('content'); ?>
-<div class="mata-kuliah-management">
+<div class="prodi-management">
     <!-- Header -->
     <div class="page-header">
-        <h1>Manajemen Mata Kuliah</h1>
-        <a href="<?php echo e(route('admin.manajemen-mata-kuliah.create')); ?>" class="btn btn-primary">
-            <i class="fas fa-plus"></i> Tambah Mata Kuliah
+        <h1>Manajemen Program Studi</h1>
+        <a href="<?php echo e(route('admin.manajemen-prodi.create')); ?>" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Tambah Program Studi
         </a>
     </div>
 
@@ -35,34 +35,6 @@
                 entries
             </label>
         </div>
-        <div class="filter-section">
-            <div class="filter-item">
-                <label>Program Studi: 
-                    <select id="prodiFilter">
-                        <option value="">Semua Prodi</option>
-                        <?php $__currentLoopData = $prodis; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $prodi): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                            <option value="<?php echo e($prodi->id); ?>" <?php echo e(request('prodi') == $prodi->id ? 'selected' : ''); ?>>
-                                <?php echo e($prodi->nama_prodi); ?>
-
-                            </option>
-                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                    </select>
-                </label>
-            </div>
-            <div class="filter-item">
-                <label>Semester: 
-                    <select id="semesterFilter">
-                        <option value="">Semua Semester</option>
-                        <?php $__currentLoopData = $semesters; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $semester): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                            <option value="<?php echo e($semester); ?>" <?php echo e(request('semester') == $semester ? 'selected' : ''); ?>>
-                                <?php echo e($semester); ?>
-
-                            </option>
-                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                    </select>
-                </label>
-            </div>
-        </div>
         <div class="search-box">
             <label>Search: 
                 <input type="text" id="searchInput" value="<?php echo e(request('search')); ?>">
@@ -76,46 +48,36 @@
             <thead>
                 <tr>
                     <th>No.</th>
-                    <th>Kode MK</th>
-                    <th>Mata Kuliah</th>
-                    <th>Program Studi</th>
-                    <th>SKS</th>
-                    <th>Semester</th>
-                    <th>Jenis</th>
+                    <th>Kode Prodi</th>
+                    <th>Nama Prodi</th>
+                    <th>Jenjang</th>
+                    <th>Ketua Prodi</th>
+                    <th>NIDN</th>
                     <th>Aksi</th>
                 </tr>
             </thead>
             <tbody>
-                <?php $__empty_1 = true; $__currentLoopData = $mataKuliahs; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $mataKuliah): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                <?php $__empty_1 = true; $__currentLoopData = $prodis; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $prodi): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                 <tr>
-                    <td><?php echo e($mataKuliahs->firstItem() + $index); ?></td>
+                    <td><?php echo e($prodis->firstItem() + $index); ?></td>
                     <td>
-                        <strong><?php echo e($mataKuliah->kode_matakuliah); ?></strong>
+                        <strong><?php echo e($prodi->kode_prodi); ?></strong>
                     </td>
-                    <td><?php echo e($mataKuliah->nama_matakuliah); ?></td>
-                    <td><?php echo e($mataKuliah->prodi->nama_prodi); ?></td>
-                    <td><?php echo e($mataKuliah->sks); ?></td>
-                    <td><?php echo e($mataKuliah->semester); ?></td>
+                    <td><?php echo e($prodi->nama_prodi); ?></td>
                     <td>
-                        <span class="badge badge-jenis-mk">
-                            <?php if($mataKuliah->jenis_mk == 'wajib'): ?>
-                                Wajib
-                            <?php elseif($mataKuliah->jenis_mk == 'pilihan'): ?>
-                                Pilihan
-                            <?php elseif($mataKuliah->jenis_mk == 'tugas akhir'): ?>
-                                Tugas Akhir
-                            <?php endif; ?>
-                        </span>
+                        <span class="badge badge-jenjang"><?php echo e($prodi->jenjang); ?></span>
                     </td>
+                    <td><?php echo e($prodi->ketua_prodi ?? '-'); ?></td>
+                    <td><?php echo e($prodi->nidn_ketua_prodi ?? '-'); ?></td>
                     <td>
                         <div class="action-buttons">
-                            <a href="<?php echo e(route('admin.manajemen-mata-kuliah.show', $mataKuliah->id)); ?>" class="btn-action btn-view" title="Lihat Detail">
+                            <a href="<?php echo e(route('admin.manajemen-prodi.show', $prodi->id)); ?>" class="btn-action btn-view" title="Lihat Detail">
                                 <i class="fas fa-eye"></i>
                             </a>
-                            <a href="<?php echo e(route('admin.manajemen-mata-kuliah.edit', $mataKuliah->id)); ?>" class="btn-action btn-edit" title="Edit">
+                            <a href="<?php echo e(route('admin.manajemen-prodi.edit', $prodi->id)); ?>" class="btn-action btn-edit" title="Edit">
                                 <i class="fas fa-edit"></i>
                             </a>
-                            <form action="<?php echo e(route('admin.manajemen-mata-kuliah.destroy', $mataKuliah->id)); ?>" method="POST" style="display: inline;" onsubmit="return confirm('Apakah Anda yakin ingin menghapus mata kuliah ini?')">
+                            <form action="<?php echo e(route('admin.manajemen-prodi.destroy', $prodi->id)); ?>" method="POST" style="display: inline;" onsubmit="return confirm('Apakah Anda yakin ingin menghapus program studi ini?')">
                                 <?php echo csrf_field(); ?>
                                 <?php echo method_field('DELETE'); ?>
                                 <button type="submit" class="btn-action btn-delete" title="Hapus">
@@ -127,10 +89,10 @@
                 </tr>
                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                 <tr>
-                    <td colspan="8" style="text-align: center; padding: 40px;">
+                    <td colspan="6" style="text-align: center; padding: 40px;">
                         <div class="empty-state">
                             <i class="fas fa-inbox" style="font-size: 3rem; color: #ccc; margin-bottom: 10px;"></i>
-                            <p>Belum ada data mata kuliah</p>
+                            <p>Belum ada data program studi</p>
                         </div>
                     </td>
                 </tr>
@@ -140,13 +102,13 @@
     </div>
 
     <!-- Pagination Info -->
-    <?php if($mataKuliahs->hasPages() || $mataKuliahs->total() > 0): ?>
+    <?php if($prodis->hasPages() || $prodis->total() > 0): ?>
     <div class="pagination-wrapper">
         <div class="pagination-info">
-            Menampilkan <?php echo e($mataKuliahs->firstItem() ?? 0); ?> sampai <?php echo e($mataKuliahs->lastItem() ?? 0); ?> dari <?php echo e($mataKuliahs->total()); ?> data
+            Menampilkan <?php echo e($prodis->firstItem() ?? 0); ?> sampai <?php echo e($prodis->lastItem() ?? 0); ?> dari <?php echo e($prodis->total()); ?> data
         </div>
         <div class="pagination-links">
-            <?php echo e($mataKuliahs->links()); ?>
+            <?php echo e($prodis->links()); ?>
 
         </div>
     </div>
@@ -159,7 +121,7 @@
         box-sizing: border-box;
     }
 
-    .mata-kuliah-management {
+    .prodi-management {
         padding: 20px;
         font-family: Arial, sans-serif;
         color: #333;
@@ -244,17 +206,7 @@
         font-size: 13px;
     }
 
-    .filter-section {
-        display: flex;
-        gap: 15px;
-    }
-
-    .filter-item {
-        display: flex;
-        align-items: center;
-    }
-
-    .filter-item label {
+    .controls label {
         display: flex;
         align-items: center;
         gap: 5px;
@@ -328,9 +280,9 @@
         white-space: nowrap;
     }
 
-    .badge-jenis-mk {
-        background: #e2e3e5;
-        color: #383d41;
+    .badge-jenjang {
+        background: #fff3cd;
+        color: #856404;
     }
 
     /* Action Buttons */
@@ -361,7 +313,7 @@
     .btn-delete {
         background: #dc3545;
         width: 31px;
-        height: 29px;
+        height: 32px;
         padding: 0;
     }
 
@@ -462,21 +414,6 @@
             width: 100%;
         }
 
-        .filter-section {
-            flex-direction: column;
-            width: 100%;
-            gap: 10px;
-        }
-
-        .filter-item {
-            width: 100%;
-        }
-
-        .filter-item select,
-        .controls input {
-            width: 100%;
-        }
-
         .table-wrapper {
             overflow-x: scroll;
         }
@@ -501,63 +438,27 @@
 
     document.addEventListener('DOMContentLoaded', function() {
         const searchInput = document.getElementById('searchInput');
-        const prodiFilter = document.getElementById('prodiFilter');
-        const semesterFilter = document.getElementById('semesterFilter');
         let searchTimeout;
 
-        function applyFilters() {
-            const url = new URL(window.location.href);
-            
-            // Search filter
-            const searchTerm = searchInput.value;
-            if (searchTerm) {
-                url.searchParams.set('search', searchTerm);
-            } else {
-                url.searchParams.delete('search');
-            }
-
-            // Prodi filter
-            const prodiValue = prodiFilter.value;
-            if (prodiValue) {
-                url.searchParams.set('prodi', prodiValue);
-            } else {
-                url.searchParams.delete('prodi');
-            }
-
-            // Semester filter
-            const semesterValue = semesterFilter.value;
-            if (semesterValue) {
-                url.searchParams.set('semester', semesterValue);
-            } else {
-                url.searchParams.delete('semester');
-            }
-
-            // Reset page to first page
-            url.searchParams.delete('page');
-
-            // Navigate to the new URL
-            window.location.href = url.toString();
-        }
-
-        // Search input
         if (searchInput) {
             searchInput.addEventListener('keyup', function() {
                 clearTimeout(searchTimeout);
-                searchTimeout = setTimeout(applyFilters, 500);
+                const searchTerm = this.value;
+                
+                searchTimeout = setTimeout(function() {
+                    const url = new URL(window.location.href);
+                    if (searchTerm) {
+                        url.searchParams.set('search', searchTerm);
+                    } else {
+                        url.searchParams.delete('search');
+                    }
+                    url.searchParams.delete('page');
+                    window.location.href = url.toString();
+                }, 500);
             });
-        }
-
-        // Prodi filter
-        if (prodiFilter) {
-            prodiFilter.addEventListener('change', applyFilters);
-        }
-
-        // Semester filter
-        if (semesterFilter) {
-            semesterFilter.addEventListener('change', applyFilters);
         }
     });
 </script>
 <?php $__env->stopPush(); ?>
 <?php $__env->stopSection(); ?>
-<?php echo $__env->make('layouts.admin', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\laragon\www\si-raya\resources\views/admin/manajemenMataKuliah/index.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('layouts.admin', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\laragon\www\si-raya\resources\views/admin/manajemenProdi/index.blade.php ENDPATH**/ ?>

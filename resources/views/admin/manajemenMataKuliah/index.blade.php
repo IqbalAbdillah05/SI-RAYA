@@ -34,6 +34,32 @@
                 entries
             </label>
         </div>
+        <div class="filter-section">
+            <div class="filter-item">
+                <label>Program Studi: 
+                    <select id="prodiFilter">
+                        <option value="">Semua Prodi</option>
+                        @foreach($prodis as $prodi)
+                            <option value="{{ $prodi->id }}" {{ request('prodi') == $prodi->id ? 'selected' : '' }}>
+                                {{ $prodi->nama_prodi }}
+                            </option>
+                        @endforeach
+                    </select>
+                </label>
+            </div>
+            <div class="filter-item">
+                <label>Semester: 
+                    <select id="semesterFilter">
+                        <option value="">Semua Semester</option>
+                        @foreach($semesters as $semester)
+                            <option value="{{ $semester }}" {{ request('semester') == $semester ? 'selected' : '' }}>
+                                {{ $semester }}
+                            </option>
+                        @endforeach
+                    </select>
+                </label>
+            </div>
+        </div>
         <div class="search-box">
             <label>Search: 
                 <input type="text" id="searchInput" value="{{ request('search') }}">
@@ -214,7 +240,17 @@
         font-size: 13px;
     }
 
-    .controls label {
+    .filter-section {
+        display: flex;
+        gap: 15px;
+    }
+
+    .filter-item {
+        display: flex;
+        align-items: center;
+    }
+
+    .filter-item label {
         display: flex;
         align-items: center;
         gap: 5px;
@@ -422,6 +458,21 @@
             width: 100%;
         }
 
+        .filter-section {
+            flex-direction: column;
+            width: 100%;
+            gap: 10px;
+        }
+
+        .filter-item {
+            width: 100%;
+        }
+
+        .filter-item select,
+        .controls input {
+            width: 100%;
+        }
+
         .table-wrapper {
             overflow-x: scroll;
         }
@@ -446,24 +497,60 @@
 
     document.addEventListener('DOMContentLoaded', function() {
         const searchInput = document.getElementById('searchInput');
+        const prodiFilter = document.getElementById('prodiFilter');
+        const semesterFilter = document.getElementById('semesterFilter');
         let searchTimeout;
 
+        function applyFilters() {
+            const url = new URL(window.location.href);
+            
+            // Search filter
+            const searchTerm = searchInput.value;
+            if (searchTerm) {
+                url.searchParams.set('search', searchTerm);
+            } else {
+                url.searchParams.delete('search');
+            }
+
+            // Prodi filter
+            const prodiValue = prodiFilter.value;
+            if (prodiValue) {
+                url.searchParams.set('prodi', prodiValue);
+            } else {
+                url.searchParams.delete('prodi');
+            }
+
+            // Semester filter
+            const semesterValue = semesterFilter.value;
+            if (semesterValue) {
+                url.searchParams.set('semester', semesterValue);
+            } else {
+                url.searchParams.delete('semester');
+            }
+
+            // Reset page to first page
+            url.searchParams.delete('page');
+
+            // Navigate to the new URL
+            window.location.href = url.toString();
+        }
+
+        // Search input
         if (searchInput) {
             searchInput.addEventListener('keyup', function() {
                 clearTimeout(searchTimeout);
-                const searchTerm = this.value;
-                
-                searchTimeout = setTimeout(function() {
-                    const url = new URL(window.location.href);
-                    if (searchTerm) {
-                        url.searchParams.set('search', searchTerm);
-                    } else {
-                        url.searchParams.delete('search');
-                    }
-                    url.searchParams.delete('page');
-                    window.location.href = url.toString();
-                }, 500);
+                searchTimeout = setTimeout(applyFilters, 500);
             });
+        }
+
+        // Prodi filter
+        if (prodiFilter) {
+            prodiFilter.addEventListener('change', applyFilters);
+        }
+
+        // Semester filter
+        if (semesterFilter) {
+            semesterFilter.addEventListener('change', applyFilters);
         }
     });
 </script>
