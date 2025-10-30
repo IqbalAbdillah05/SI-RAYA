@@ -7,7 +7,7 @@
     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
         <div>
             <h4 style="margin: 0 0 8px 0; font-size: 18px; font-weight: 600;">
-                <i class="fas fa-clipboard-list"></i> Riwayat Presensi
+                <i class="fas fa-clipboard-list"></i> Riwayat Presensi Mahasiswa
             </h4>
             <p style="margin: 0; opacity: 0.95; font-size: 14px;">
                 Daftar kehadiran Anda dalam perkuliahan

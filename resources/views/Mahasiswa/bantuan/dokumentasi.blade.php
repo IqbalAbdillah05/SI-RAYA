@@ -28,6 +28,7 @@
                 <li><a href="#krs"><i class="fas fa-edit"></i> Pengisian KRS</a></li>
                 <li><a href="#khs"><i class="fas fa-chart-bar"></i> Melihat KHS</a></li>
                 <li><a href="#jadwal"><i class="fas fa-calendar-alt"></i> Jadwal Kuliah</a></li>
+                <li><a href="#presensi"><i class="fas fa-clipboard-list"></i> Riwayat Presensi</a></li>
             </ul>
         </div>
 
@@ -357,6 +358,124 @@
                     <div>
                         <strong>Tips:</strong>
                         <p>Selalu cek jadwal sebelum kuliah. Perubahan jadwal akan otomatis diperbarui di sistem dan diumumkan melalui grup kelas.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="doc-section" id="presensi">
+            <div class="section-header">
+                <div class="section-icon">
+                    <i class="fas fa-clipboard-list"></i>
+                </div>
+                <h2>📋 Riwayat Presensi</h2>
+            </div>
+            
+            <div class="doc-content">
+                <h3>Melihat Riwayat Presensi</h3>
+                <div class="step-list">
+                    <div class="step-item">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <strong>Akses Menu Presensi</strong>
+                            <p>Klik menu "Presensi Mahasiswa" di sidebar navigasi</p>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <strong>Lihat Riwayat Lengkap</strong>
+                            <p>Halaman menampilkan daftar kehadiran Anda di setiap mata kuliah</p>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <strong>Filter Riwayat</strong>
+                            <p>Gunakan dropdown untuk memfilter berdasarkan semester atau status kehadiran</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="doc-note">
+                    <i class="fas fa-lightbulb"></i>
+                    <div>
+                        <strong>Informasi Presensi</strong>
+                        <p>Riwayat presensi mencatat seluruh kehadiran Anda di setiap mata kuliah, termasuk status hadir, izin, sakit, dan alpha.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="doc-content">
+                <h3>Status Kehadiran</h3>
+                <table class="info-table">
+                    <thead>
+                        <tr>
+                            <th>Status</th>
+                            <th>Keterangan</th>
+                            <th>Pengaruh</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Hadir</strong></td>
+                            <td>Mengikuti perkuliahan secara penuh</td>
+                            <td><span class="badge success">Positif</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Izin</strong></td>
+                            <td>Tidak hadir dengan keterangan resmi</td>
+                            <td><span class="badge warning">Netral</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Sakit</strong></td>
+                            <td>Tidak hadir karena kondisi kesehatan</td>
+                            <td><span class="badge info">Netral</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Alpha</strong></td>
+                            <td>Tidak hadir tanpa keterangan</td>
+                            <td><span class="badge danger">Negatif</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="doc-content">
+                <h3>Statistik Presensi</h3>
+                <p>Halaman riwayat presensi menampilkan statistik kehadiran Anda, meliputi:</p>
+                <div class="feature-grid">
+                    <div class="feature-item">
+                        <i class="fas fa-chart-pie"></i>
+                        <strong>Total Presensi</strong>
+                        <p>Jumlah total pertemuan yang tercatat</p>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check-circle"></i>
+                        <strong>Hadir</strong>
+                        <p>Jumlah pertemuan yang dihadiri</p>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-calendar-times"></i>
+                        <strong>Izin/Sakit</strong>
+                        <p>Jumlah pertemuan dengan izin atau sakit</p>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-times-circle"></i>
+                        <strong>Alpha</strong>
+                        <p>Jumlah pertemuan yang tidak dihadiri</p>
+                    </div>
+                </div>
+
+                <div class="doc-warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <div>
+                        <strong>Perhatian!</strong>
+                        <ul>
+                            <li>Kehadiran kurang dari 75% dapat mempengaruhi kelulusan mata kuliah</li>
+                            <li>Terlalu banyak alpha dapat mengakibatkan sanksi akademik</li>
+                            <li>Selalu konfirmasi dengan dosen pengampu jika memiliki kendala kehadiran</li>
+                        </ul>
                     </div>
                 </div>
             </div>
