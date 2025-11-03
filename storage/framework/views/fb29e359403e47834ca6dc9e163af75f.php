@@ -1,5 +1,3 @@
-
-
 <?php $__env->startSection('title', 'Riwayat Presensi'); ?>
 
 <?php $__env->startSection('content'); ?>
@@ -7,26 +5,37 @@
     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
         <div>
             <h4 style="margin: 0 0 8px 0; font-size: 18px; font-weight: 600;">
-                <i class="fas fa-clipboard-list"></i> Riwayat Presensi
+                <i class="fas fa-clipboard-list"></i> Riwayat Presensi Mahasiswa
             </h4>
             <p style="margin: 0; opacity: 0.95; font-size: 14px;">
                 Daftar kehadiran Anda dalam perkuliahan
             </p>
         </div>
-        <a href="<?php echo e(route('mahasiswa.dashboard')); ?>" class="btn-back" style="background: white; color: #0B6623; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; transition: all 0.3s;">
-            <i class="fas fa-arrow-left"></i>
-            Kembali
-        </a>
     </div>
 </div>
 
+<!-- Alert Messages -->
+<?php if(session('success')): ?>
+<div class="alert alert-success" style="background-color: #d4edda; color: #155724; padding: 16px; border-radius: 8px; margin-bottom: 20px; display: flex; align-items: center; gap: 12px; border-left: 4px solid #28a745;">
+    <i class="fas fa-check-circle" style="font-size: 20px;"></i>
+    <span><?php echo e(session('success')); ?></span>
+</div>
+<?php endif; ?>
+
+<?php if(session('error')): ?>
+<div class="alert alert-danger" style="background-color: #f8d7da; color: #721c24; padding: 16px; border-radius: 8px; margin-bottom: 20px; display: flex; align-items: center; gap: 12px; border-left: 4px solid #dc3545;">
+    <i class="fas fa-exclamation-circle" style="font-size: 20px;"></i>
+    <span><?php echo e(session('error')); ?></span>
+</div>
+<?php endif; ?>
+
 <!-- Statistik Presensi -->
-<div class="card-simple" style="padding: 0;">
+<div class="card-simple" style="padding: 0; margin-bottom: 20px;">
     <div class="statistik-presensi" style="background: linear-gradient(135deg, #e8f5ec 0%, #d4edda 100%); padding: 24px; border-bottom: 2px solid #e0e0e0;">
         <h4 style="margin: 0 0 20px 0; color: #0B6623; font-size: 18px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
             <i class="fas fa-chart-bar"></i> Statistik Presensi
         </h4>
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px;">
             <div style="background: white; padding: 16px; border-radius: 8px; border: 1px solid #c3e6cb;">
                 <div style="font-size: 13px; color: #666; margin-bottom: 8px; font-weight: 500;">Total Presensi</div>
                 <div style="font-size: 24px; font-weight: 700; color: #0B6623;"><?php echo e($statistikPresensi['total']); ?></div>
@@ -47,50 +56,61 @@
                 <div style="font-size: 13px; color: #666; margin-bottom: 8px; font-weight: 500;">Alpha</div>
                 <div style="font-size: 24px; font-weight: 700; color: #dc3545;"><?php echo e($statistikPresensi['alpha']); ?></div>
             </div>
+            <div style="background: white; padding: 16px; border-radius: 8px; border: 1px solid #c3e6cb;">
+                <div style="font-size: 13px; color: #666; margin-bottom: 8px; font-weight: 500;">% Kehadiran</div>
+                <div style="font-size: 24px; font-weight: 700; color: #0B6623;"><?php echo e($statistikPresensi['persentase_hadir']); ?>%</div>
+            </div>
         </div>
     </div>
 </div>
 
 <!-- Filter Section -->
-<div class="card-simple">
-    <div style="background-color: #e8f5ec; padding: 20px; border-radius: 8px; margin-bottom: 0;">
+<div class="card-simple" style="margin-bottom: 20px;">
+    <div style="background-color: #e8f5ec; padding: 20px; border-radius: 8px;">
         <h4 style="margin-bottom: 16px; color: #0B6623; font-size: 16px; font-weight: 600;">
             <i class="fas fa-filter"></i> Filter Presensi
         </h4>
-        <form method="GET" action="<?php echo e(route('mahasiswa.presensi.riwayat')); ?>" id="filterForm">
-            <div style="display: flex; gap: 1rem;">
-                <div style="flex: 1;">
-                    <label style="display: block; margin-bottom: 8px; color: #0B6623; font-size: 14px;">Semester</label>
-                    <select name="semester" id="semesterFilter" class="form-control" onchange="document.getElementById('filterForm').submit()">
-                        <option value="">Semua Semester</option>
-                        <?php $__currentLoopData = $semesters; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $semester): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                            <option value="<?php echo e($semester); ?>" <?php echo e(request('semester') == $semester ? 'selected' : ''); ?>>
-                                Semester <?php echo e($semester); ?>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
+            <div>
+                <label style="display: block; margin-bottom: 8px; color: #0B6623; font-size: 14px; font-weight: 500;">Semester</label>
+                <select name="semester" id="semesterFilter" class="form-control">
+                    <option value="">Semua Semester</option>
+                    <?php $__currentLoopData = $semesters; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $sem): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <option value="<?php echo e($sem); ?>" <?php echo e(request('semester') == $sem ? 'selected' : ''); ?>>
+                            Semester <?php echo e($sem); ?>
 
-                            </option>
-                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                    </select>
-                </div>
-                <div style="flex: 1;">
-                    <label style="display: block; margin-bottom: 8px; color: #0B6623; font-size: 14px;">Status</label>
-                    <select name="status" id="statusFilter" class="form-control" onchange="document.getElementById('filterForm').submit()">
-                        <option value="">Semua Status</option>
-                        <?php $__currentLoopData = $statusOptions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $label): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                            <option value="<?php echo e($key); ?>" <?php echo e(request('status') == $key ? 'selected' : ''); ?>>
-                                <?php echo e($label); ?>
-
-                            </option>
-                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                    </select>
-                </div>
+                        </option>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                </select>
             </div>
-        </form>
+            <div>
+                <label style="display: block; margin-bottom: 8px; color: #0B6623; font-size: 14px; font-weight: 500;">Status</label>
+                <select name="status" id="statusFilter" class="form-control">
+                    <option value="">Semua Status</option>
+                    <?php $__currentLoopData = $statusOptions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $label): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <option value="<?php echo e($key); ?>" <?php echo e(request('status') == $key ? 'selected' : ''); ?>>
+                            <?php echo e($label); ?>
+
+                        </option>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                </select>
+            </div>
+        </div>
     </div>
 </div>
 
 <!-- Tabel Riwayat Presensi -->
 <div class="card-simple" style="padding: 0;">
-    <div class="khs-table-container">
+    <!-- Loading Indicator -->
+    <div id="loadingIndicator" style="display: none; padding: 40px; text-align: center; background: white;">
+        <div style="display: inline-block;">
+            <div class="spinner" style="border: 4px solid #f3f3f3; border-top: 4px solid #0B6623; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite;"></div>
+            <p style="margin-top: 16px; color: #666;">Memuat data...</p>
+        </div>
+    </div>
+
+    <div class="khs-table-container" id="tableContainer">
         <table class="khs-table">
             <thead>
                 <tr>
@@ -103,7 +123,7 @@
                     <th style="width: 20%;">Keterangan</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="presensiTableBody">
                 <?php $__empty_1 = true; $__currentLoopData = $presensi; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                 <tr>
                     <td class="text-center"><?php echo e($presensi->firstItem() + $index); ?></td>
@@ -139,45 +159,54 @@
 </div>
 
 <!-- Pagination -->
-<?php if($presensi->hasPages()): ?>
-<div class="card-simple">
-    <div style="display: flex; justify-content: space-between; align-items: center; padding: 16px;">
-        <div style="display: flex; align-items: center; gap: 1rem;">
-            <div style="font-size: 14px; color: #666;">
-                Tampilkan
-                <form method="GET" action="<?php echo e(route('mahasiswa.presensi.riwayat')); ?>" id="rowsPerPageForm" style="display: inline-block; margin: 0 8px;">
-                    <select name="rows" id="rowsPerPage" class="form-control" style="width: auto; display: inline-block; padding: 6px 10px; font-size: 13px;" onchange="document.getElementById('rowsPerPageForm').submit()">
+<div id="paginationContainer">
+    <?php if($presensi->hasPages()): ?>
+    <div class="card-simple">
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 16px; flex-wrap: wrap; gap: 1rem;">
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <div style="font-size: 14px; color: #666;">
+                    Tampilkan
+                    <select name="rows" id="rowsPerPage" class="form-control" style="width: auto; display: inline-block; padding: 6px 10px; font-size: 13px; margin: 0 8px;">
                         <option value="10" <?php echo e(request('rows', 10) == 10 ? 'selected' : ''); ?>>10</option>
                         <option value="25" <?php echo e(request('rows') == 25 ? 'selected' : ''); ?>>25</option>
                         <option value="50" <?php echo e(request('rows') == 50 ? 'selected' : ''); ?>>50</option>
                         <option value="100" <?php echo e(request('rows') == 100 ? 'selected' : ''); ?>>100</option>
                     </select>
-                </form>
-                baris per halaman
+                    baris per halaman
+                </div>
             </div>
-        </div>
-        <div style="display: flex; align-items: center; gap: 1rem;">
-            <div style="font-size: 14px; color: #666;">
-                Menampilkan <?php echo e($presensi->firstItem()); ?> sampai <?php echo e($presensi->lastItem()); ?> dari <?php echo e($presensi->total()); ?> data
-            </div>
-            <div>
-                <?php echo e($presensi->appends(request()->except('page'))->links()); ?>
+            <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+                <div id="paginationInfo" style="font-size: 14px; color: #666;">
+                    Menampilkan <?php echo e($presensi->firstItem()); ?> sampai <?php echo e($presensi->lastItem()); ?> dari <?php echo e($presensi->total()); ?> data
+                </div>
+                <div id="paginationLinks">
+                    <?php echo e($presensi->appends(request()->except('page'))->links()); ?>
 
+                </div>
             </div>
         </div>
     </div>
+    <?php endif; ?>
 </div>
-<?php endif; ?>
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startPush('styles'); ?>
 <style>
+    .card-simple {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        margin-bottom: 20px;
+        overflow: hidden;
+    }
+
     .badge-status {
         display: inline-block;
         padding: 4px 12px;
         border-radius: 12px;
         font-weight: 600;
         font-size: 12px;
+        text-transform: uppercase;
     }
 
     .status-hadir {
@@ -215,9 +244,60 @@
         box-shadow: 0 0 0 3px rgba(11, 102, 35, 0.1);
     }
 
-    .btn-back:hover {
+    .btn-back:hover, .btn-add:hover {
         transform: translateY(-2px);
         box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .btn-filter:hover {
+        background: #094d1a;
+    }
+
+    .btn-reset:hover {
+        background: #5a6268;
+    }
+
+    .btn-action {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        border-radius: 6px;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-decoration: none;
+    }
+
+    .btn-view {
+        background: #17a2b8;
+        color: white;
+    }
+
+    .btn-view:hover {
+        background: #138496;
+        transform: scale(1.1);
+    }
+
+    .btn-edit {
+        background: #ffc107;
+        color: #333;
+    }
+
+    .btn-edit:hover {
+        background: #e0a800;
+        transform: scale(1.1);
+    }
+
+    .btn-delete {
+        background: #dc3545;
+        color: white;
+    }
+
+    .btn-delete:hover {
+        background: #c82333;
+        transform: scale(1.1);
     }
 
     .khs-table-container {
@@ -290,6 +370,26 @@
         font-size: 14px;
     }
 
+    .alert {
+        animation: slideDown 0.3s ease-out;
+    }
+
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
     /* Responsive */
     @media (max-width: 768px) {
         .card-info > div {
@@ -297,9 +397,17 @@
             align-items: flex-start !important;
         }
 
-        .btn-back {
+        .btn-back, .btn-add {
             width: 100%;
             justify-content: center;
+        }
+
+        .khs-table-container {
+            overflow-x: scroll;
+        }
+
+        .khs-table {
+            min-width: 800px;
         }
     }
 </style>
@@ -307,27 +415,177 @@
 
 <?php $__env->startPush('scripts'); ?>
 <script>
+    // CSRF Token untuk AJAX
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+
+    // State untuk filter
+    let currentFilters = {
+        semester: '<?php echo e(request("semester")); ?>',
+        status: '<?php echo e(request("status")); ?>',
+        rows: <?php echo e(request('rows', 10)); ?>,
+        page: 1
+    };
+
+    // Auto hide alerts after 5 seconds
     document.addEventListener('DOMContentLoaded', function() {
-        const filterForm = document.getElementById('filterForm');
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(alert => {
+            setTimeout(() => {
+                alert.style.transition = 'opacity 0.5s ease-out';
+                alert.style.opacity = '0';
+                setTimeout(() => alert.remove(), 500);
+            }, 5000);
+        });
+
+        // Initialize filter listeners
+        initializeFilters();
+    });
+
+    function initializeFilters() {
         const semesterFilter = document.getElementById('semesterFilter');
         const statusFilter = document.getElementById('statusFilter');
+        const rowsPerPage = document.getElementById('rowsPerPage');
 
-        // Fungsi untuk menerapkan filter
-        function applyFilter() {
-            filterForm.submit();
+        // Semester filter - realtime
+        semesterFilter?.addEventListener('change', function() {
+            currentFilters.semester = this.value;
+            currentFilters.page = 1;
+            loadPresensiData();
+        });
+
+        // Status filter - realtime
+        statusFilter?.addEventListener('change', function() {
+            currentFilters.status = this.value;
+            currentFilters.page = 1;
+            loadPresensiData();
+        });
+
+        // Rows per page - realtime
+        rowsPerPage?.addEventListener('change', function() {
+            currentFilters.rows = this.value;
+            currentFilters.page = 1;
+            loadPresensiData();
+        });
+    }
+
+    function loadPresensiData() {
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        const tableContainer = document.getElementById('tableContainer');
+        const tbody = document.getElementById('presensiTableBody');
+
+        // Show loading
+        loadingIndicator.style.display = 'block';
+        tableContainer.style.opacity = '0.5';
+
+        // Build query string
+        const params = new URLSearchParams();
+        if (currentFilters.semester) params.append('semester', currentFilters.semester);
+        if (currentFilters.status) params.append('status', currentFilters.status);
+        params.append('rows', currentFilters.rows);
+        params.append('page', currentFilters.page);
+
+        // AJAX request
+        fetch(`<?php echo e(route('mahasiswa.presensi.filter')); ?>?${params.toString()}`, {
+            method: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                renderTable(data.data, data.pagination);
+                updatePagination(data.pagination);
+            } else {
+                showError('Gagal memuat data presensi');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showError('Terjadi kesalahan saat memuat data');
+        })
+        .finally(() => {
+            // Hide loading
+            loadingIndicator.style.display = 'none';
+            tableContainer.style.opacity = '1';
+        });
+    }
+
+    function renderTable(data, pagination) {
+        const tbody = document.getElementById('presensiTableBody');
+        
+        if (data.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="7" class="text-center">
+                        <div class="empty-state">
+                            <div class="empty-icon">
+                                <i class="fas fa-inbox"></i>
+                            </div>
+                            <h3>Tidak Ada Riwayat Presensi</h3>
+                            <p>Belum ada data presensi untuk ditampilkan.</p>
+                            <p class="empty-hint">Silakan pilih filter lain atau hubungi bagian akademik.</p>
+                        </div>
+                    </td>
+                </tr>
+            `;
+            return;
         }
 
-        // Event listener untuk filter semester
-        semesterFilter.addEventListener('change', function() {
-            applyFilter();
+        let html = '';
+        data.forEach((item, index) => {
+            const no = (pagination.from || 1) + index;
+            html += `
+                <tr>
+                    <td class="text-center">${no}</td>
+                    <td>
+                        <strong>${item.mata_kuliah.nama}</strong><br>
+                        <small style="color: #666;">${item.mata_kuliah.kode}</small>
+                    </td>
+                    <td>${item.dosen}</td>
+                    <td>${item.waktu_presensi}</td>
+                    <td class="text-center">${item.semester}</td>
+                    <td class="text-center">
+                        <span class="badge-status status-${item.status.toLowerCase()}">
+                            ${item.status.charAt(0).toUpperCase() + item.status.slice(1)}
+                        </span>
+                    </td>
+                    <td>${item.keterangan}</td>
+                </tr>
+            `;
         });
+        
+        tbody.innerHTML = html;
+    }
 
-        // Event listener untuk filter status
-        statusFilter.addEventListener('change', function() {
-            applyFilter();
-        });
-    });
+    function updatePagination(pagination) {
+        const paginationInfo = document.getElementById('paginationInfo');
+        
+        if (paginationInfo && pagination.total > 0) {
+            paginationInfo.textContent = `Menampilkan ${pagination.from} sampai ${pagination.to} dari ${pagination.total} data`;
+        }
+
+        // Update pagination links (if needed)
+        // You can implement pagination navigation here
+    }
+
+    function showError(message) {
+        const tbody = document.getElementById('presensiTableBody');
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="7" class="text-center">
+                    <div class="empty-state">
+                        <div class="empty-icon" style="color: #dc3545;">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <h3 style="color: #dc3545;">Error</h3>
+                        <p>${message}</p>
+                    </div>
+                </td>
+            </tr>
+        `;
+    }
 </script>
 <?php $__env->stopPush(); ?>
-
 <?php echo $__env->make('layouts.mahasiswa', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\laragon\www\si-raya\resources\views/Mahasiswa/presensiMahasiswa/riwayat.blade.php ENDPATH**/ ?>

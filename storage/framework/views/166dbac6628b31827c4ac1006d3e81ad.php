@@ -677,9 +677,9 @@
                 </a>
 
                 <a href="<?php echo e(route('mahasiswa.presensi.riwayat')); ?>" class="nav-link <?php echo e(request()->routeIs('mahasiswa.presensi.*') ? 'active' : ''); ?>">
-                    <i class="fas fa-clipboard-list"></i>
-                    <span>Presensi Mahasiswa</span>
-                </a>
+    <i class="fas fa-clipboard-list"></i>
+    <span>Riwayat Presensi</span>
+</a>
 
                 <a href="<?php echo e(route('mahasiswa.bantuan.index')); ?>" class="nav-link <?php echo e(request()->routeIs('mahasiswa.bantuan.*') ? 'active' : ''); ?>">
                     <i class="fas fa-question-circle"></i>
@@ -734,12 +734,12 @@
         </div>
 
         <div class="mobile-nav-section">
-            <div class="mobile-nav-title">Presensi</div>
-            <a href="<?php echo e(route('mahasiswa.presensi.riwayat')); ?>" class="mobile-nav-link <?php echo e(request()->routeIs('mahasiswa.presensi.*') ? 'active' : ''); ?>">
-                <i class="fas fa-clipboard-list"></i>
-                <span>Riwayat Presensi</span>
-            </a>
-        </div>
+    <div class="mobile-nav-title">Presensi</div>
+    <a href="<?php echo e(route('mahasiswa.presensi.riwayat')); ?>" class="mobile-nav-link <?php echo e(request()->routeIs('mahasiswa.presensi.*') ? 'active' : ''); ?>">
+        <i class="fas fa-clipboard-list"></i>
+        <span>Riwayat Presensi Mahasiswa</span>
+    </a>
+</div>
     </div>
 
     <!-- Main Content -->

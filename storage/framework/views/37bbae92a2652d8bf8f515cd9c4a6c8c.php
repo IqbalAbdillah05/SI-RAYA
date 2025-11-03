@@ -1,5 +1,3 @@
-
-
 <?php $__env->startSection('title', 'Manajemen Mata Kuliah'); ?>
 
 <?php $__env->startSection('content'); ?>
