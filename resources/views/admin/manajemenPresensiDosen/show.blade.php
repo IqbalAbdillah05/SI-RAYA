@@ -70,6 +70,28 @@
             </div>
         </div>
 
+        @if(in_array($presensi->status, ['izin', 'sakit']))
+        <div class="detail-card">
+            <div class="card-header">
+                <h3>Foto Bukti</h3>
+            </div>
+            <div class="card-body">
+                @if($presensi->foto_bukti)
+                    <div class="foto-bukti-container">
+                        <img src="{{ asset('storage/' . $presensi->foto_bukti) }}" alt="Foto Bukti" class="foto-bukti">
+                        <a href="{{ asset('storage/' . $presensi->foto_bukti) }}" 
+                           target="_blank" 
+                           class="btn btn-sm btn-info">
+                            <i class="fas fa-expand"></i> Lihat Foto
+                        </a>
+                    </div>
+                @else
+                    Tidak ada foto bukti
+                @endif
+            </div>
+        </div>
+        @endif
+
         @if($presensi->status === 'hadir')
         <!-- Lokasi Card -->
         <div class="detail-card">
@@ -414,6 +436,83 @@
         .action-section .btn {
             justify-content: center;
         }
+    }
+
+    .bukti-foto-container {
+        max-width: 400px;
+        margin: 0 auto;
+        cursor: pointer;
+        transition: transform 0.3s ease;
+    }
+
+    .bukti-foto-container:hover {
+        transform: scale(1.05);
+    }
+
+    .bukti-foto {
+        width: 100%;
+        height: auto;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .modal-image {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        padding-top: 50px;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0,0,0,0.9);
+    }
+
+    .modal-image .modal-content {
+        margin: auto;
+        display: block;
+        width: 80%;
+        max-width: 700px;
+    }
+
+    .close-modal {
+        position: absolute;
+        top: 15px;
+        right: 35px;
+        color: #f1f1f1;
+        font-size: 40px;
+        font-weight: bold;
+        transition: 0.3s;
+        cursor: pointer;
+    }
+
+    .close-modal:hover,
+    .close-modal:focus {
+        color: #bbb;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    /* Tambahkan style untuk foto bukti */
+    .foto-bukti-container {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+    }
+
+    .foto-bukti {
+        max-width: 300px;
+        max-height: 300px;
+        object-fit: contain;
+        border-radius: 6px;
+        border: 1px solid #ddd;
+    }
+
+    .btn-sm {
+        padding: 4px 8px;
+        font-size: 12px;
     }
 </style>
 @endpush

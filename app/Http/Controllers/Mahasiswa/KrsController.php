@@ -57,7 +57,7 @@ class KrsController extends Controller
             ->orderBy('nama_matakuliah')
             ->get();
 
-        return view('mahasiswa.krs.create', compact('mahasiswa', 'mataKuliahList'));
+        return view('Mahasiswa.krs.create', compact('mahasiswa', 'mataKuliahList'));
     }
 
     public function store(Request $request)
@@ -137,7 +137,7 @@ class KrsController extends Controller
             return $detail->mataKuliah->sks ?? 0;
         });
 
-        return view('mahasiswa.krs.show', compact('mahasiswa', 'krs', 'totalSks'));
+        return view('Mahasiswa.krs.show', compact('mahasiswa', 'krs', 'totalSks'));
     }
 
     public function edit($id)
@@ -163,7 +163,7 @@ class KrsController extends Controller
         // Ambil ID mata kuliah yang sudah dipilih
         $selectedMataKuliahIds = $krs->details->pluck('mata_kuliah_id')->toArray();
 
-        return view('mahasiswa.krs.edit', compact('mahasiswa', 'krs', 'mataKuliahList', 'selectedMataKuliahIds'));
+        return view('Mahasiswa.krs.edit', compact('mahasiswa', 'krs', 'mataKuliahList', 'selectedMataKuliahIds'));
     }
 
     public function update(Request $request, $id)
